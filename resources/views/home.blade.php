@@ -52,7 +52,7 @@
   <div class="row " >
         <div class="col-12 col-md-3 d-flex justify-content-center align-items-end pb-2 pe-0 mb-4">
             <div class="text-center pe-2">
-                <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner vertical 2')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
+                <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner6')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
             </div>
         </div>
         <div class="col-12 col-md-9 mb-4">
@@ -60,9 +60,9 @@
         </div>
     </div>
   <br>
-  @if(!empty($banners->where('descripcionPublicidad','Banner campania 1')->first()->imagenPublicidad))
+  @if(!empty($banners->where('descripcionPublicidad','Banner9')->first()->imagenPublicidad))
   <div class="row">
-      <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner campania 1')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow" >
+      <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner9')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow" >
   </div>
   @endif
   <br>
@@ -78,7 +78,7 @@
     </div>
       <div class="col-12 col-md-3  d-flex justify-content-center align-items-end pb-2 ps-0">
           <div class="text-center ps-2">
-            <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner vertical 1')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
+            <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner8')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
           </div>
       </div>
   </div>

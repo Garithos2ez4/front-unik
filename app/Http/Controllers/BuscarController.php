@@ -37,6 +37,8 @@ class BuscarController extends Controller
         //Variables propias del controlador
         $obt = $request->input('header');
         if(!empty($obt)){
+
+            
            session(['buscar' => $obt]);
         }
         $productos = $this->productoService->searchProductsFilter('nombreProducto',session()->get('buscar',$obt),32,$request);
