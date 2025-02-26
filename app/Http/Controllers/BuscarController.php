@@ -41,13 +41,18 @@ class BuscarController extends Controller
             
            session(['buscar' => $obt]);
         }
-        $productos = $this->productoService->searchProductsFilter('nombreProducto',session()->get('buscar',$obt),32,$request);
-
-        if($productos->isEmpty()){
-            $productos = $this->productoService->searchProductsFilter('modelo',session()->get('buscar',$obt),32,$request);
-        }
         
-        //Lista de productos paginados
+        $productos = $this->productoService->searchProductsFilter('partNumber', session()->get('buscar', $obt), 32, $request);
+   
+        if ($productos->isEmpty()) {
+            $productos = $this->productoService->searchProductsFilter('nombreProducto', session()->get('buscar', $obt), 32, $request);
+        }   
+      
+        if ($productos->isEmpty()) {
+            $productos = $this->productoService->searchProductsFilter('modelo', session()->get('buscar', $obt), 32, $request);
+        }
+          
+      
         if($request->query('page') || $request->query('filtro')){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
