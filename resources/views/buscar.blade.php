@@ -6,7 +6,7 @@
     <div class="container align-middle" style="height:50vh">
         <div class="row" style="height:20vh">
         </div>
-        <x-aviso_no_encontrado :nameProduct="$obt" />
+        <x-aviso_no_encontrado :nameProduct="$obt"/>
     </div>
     @else
     <br>
