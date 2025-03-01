@@ -43,10 +43,9 @@
               <div class="col-12 col-md-9 align-middle">
                   <div class="input-group align-middle">
                       <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></button></i></div>
-                            <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto!!" aria-label="Last name" value="{{request('header')}}">
+                            <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
                             <ul class="list-group" id="suggestions" style="position:absolute;top: 100%; left: 0; width: 100%;z-index:1100"></ul>
-                    </div>
-                    
+                    </div>                   
               </div>
               <div class="col-md-1 text-center d-none d-md-block">
                   <h6>{{$tipoCambio}}</h6>
