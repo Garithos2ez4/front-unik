@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\HeaderService;
 use App\Services\FiltroService;
 
+
 class TipoController extends Controller
 {
     public function index($slug,$grup,Request $request){

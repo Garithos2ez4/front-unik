@@ -56,6 +56,9 @@ class HeaderService implements HeaderServiceInterface
     {
         return $this->tipoRepository->getAll();
     }
+    public function obtenerLinkRedes(){
+        return $this->obtenerLinkRedes()->first();
+    }
     
    public function getApiDolar() {
        
