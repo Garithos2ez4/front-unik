@@ -18,7 +18,7 @@ class BuscarService implements BuscarServiceInterface
 
     public function searchProducts($query){
         $productos = $this->productoRepository->searchByColumn('nombreProducto',$query)
-                                                ->take(7)
+                                                ->take(6)
                                                 ->map(function ($producto) {
                                                     // Agregar las URLs de las im��genes al producto
                                                     $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
@@ -28,7 +28,7 @@ class BuscarService implements BuscarServiceInterface
                                                 });
         if($productos->isEmpty()){
             $productos = $this->productoRepository->searchByColumn('modelo',$query)
-                                                    ->take(7)
+                                                    ->take(6)
                                                     ->map(function ($producto) {
                                                         // Agregar las URLs de las im��genes al producto
                                                         $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
