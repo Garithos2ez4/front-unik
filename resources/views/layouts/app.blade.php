@@ -236,7 +236,7 @@
         <br>
         <p class="text-center text-secondary">Copyright  {{ date('Y') }} &copy; {{$empresa->razonSocial}}. Todos los derechos reservados</p>
         <br>
-        <p class="text-end pe-2"><small class="text-hidden">By Leonardo.M.H.</small></p>  
+        <p class="text-end pe-2"><small class="text-hidden">By Leonardo.M.H. - Luigui C.O - Alonso D.C.R</small></p>        
     </footer>
     </div>
     @stack('scripts')
