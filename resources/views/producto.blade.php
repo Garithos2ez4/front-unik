@@ -10,6 +10,11 @@
         <div class="col-12 col-md-6">
             <div class="row">
                 <div class="col-2 d-none d-md-block">
+
+                    @php
+                        // Calculamos el slide inicial basado en la cantidad de imágenes
+                        $slideOffset = isset($imagesCount) ? $imagesCount : 4; // Asume 4 imágenes por defecto
+                    @endphp
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="{{$producto->displayImg($producto->publicImages()[0])}}active" aria-current="true" aria-label="Slide 1">
                         <img src="{{$producto->publicImages()[0]}}" class="d-block w-100 productimg border" alt="...">
                     </a>
@@ -21,6 +26,20 @@
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4" class="{{$producto->displayImg($producto->publicImages()[3])}}">
                         <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 productimg border" alt="...">
                     </a>
+                    <!-- Miniaturas en el lado izquierdo -->
+                    @if($producto->videoUrl1)
+                        <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 5">
+                                <i class="bi bi-play-btn-fill fs-1 text-danger"></i>   
+                        </a>
+                        @php $slideOffset++; @endphp
+                    @endif
+
+                    @if($producto->videoUrl2)
+                        <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 6">                           
+                                <i class="bi bi-play-btn-fill fs-1 "></i>
+                        </a>
+                    @endif
+
                 </div>
                 <div class="col-12 col-md-10">
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
@@ -37,6 +56,31 @@
                         <div class="carousel-item">
                           <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[3])}}" alt="...">
                         </div>
+                        <!-- Video 1 -->
+                        @if($producto->videoUrl1)
+                            <div class="carousel-item">
+                                <div class="ratio ratio-16x9">
+                                    <iframe id="video1"
+                                        src="{{ $producto->getYoutubeEmbed($producto->videoUrl1) }}?rel=0&mute=1"
+                                        class="yt-frame d-block w-100"
+                                        title="Video 1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Video 2 -->
+                        @if($producto->videoUrl2)
+                            <div class="carousel-item">
+                                <div class="ratio ratio-16x9">
+                                    <iframe id="video2"
+                                        src="{{ $producto->getYoutubeEmbed($producto->videoUrl2) }}?rel=0&mute=1"
+                                        class="yt-frame d-block w-100"
+                                        title="Video 2" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        @endif
+
+
                       </div>
                       <div class="d-block d-sm-none">
                           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -143,5 +187,23 @@
     </div>
     <br>
 </div>
+<script>
+    const carousel = document.querySelector('#carouselExampleIndicators');
+
+    carousel.addEventListener('slid.bs.carousel', function () {
+        const iframes = document.querySelectorAll('.yt-frame');
+        iframes.forEach(iframe => {
+            const src = iframe.getAttribute('src').split('?')[0];
+            iframe.setAttribute('src', src); // Detener video
+        });
+
+        // Reproducir solo el iframe visible
+        const active = carousel.querySelector('.carousel-item.active iframe');
+        if (active) {
+            const base = active.getAttribute('src').split('?')[0];
+            active.setAttribute('src', base + '?autoplay=1&rel=0');
+        }
+    });
+</script>
 
 @endsection

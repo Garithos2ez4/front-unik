@@ -35,6 +35,8 @@ class Producto extends Model
                             'imagenProducto2',
                             'imagenProducto3',
                             'imagenProducto4',
+                            'videoUrl1',  
+                            'videoUrl2',
                             'estadoProductoWeb',
                             'slugProducto'
                             ];
@@ -147,4 +149,34 @@ class Producto extends Model
             return "";
         }
     }
+    public function publicVideos()
+    {
+        return array_filter([
+            $this->videoUrl1,
+            $this->videoUrl2
+        ]);
+    }
+    public function getYoutubeThumbnail($videoId)
+{
+    if (empty($videoId)) return null;
+
+    // Opcional: Validar que sea un ID de 11 caracteres
+    if (!preg_match('/^[\w-]{11}$/', $videoId)) return null;
+
+    return "https://img.youtube.com/vi/{$videoId}/hqdefault.jpg";
+}
+
+
+    public function getYoutubeEmbed($videoId)
+{
+    if (empty($videoId)) return null;
+
+    // Validar que sea un ID válido (11 caracteres alfanum + guiones)
+    if (!preg_match('/^[\w-]{11}$/', $videoId)) return null;
+
+    // URL para iframe embed de YouTube con autoplay desactivado por defecto
+    return "https://www.youtube.com/embed/{$videoId}";
+}
+
+
 }
