@@ -29,14 +29,14 @@
                     <!-- Miniaturas en el lado izquierdo -->
                     @if($producto->videoUrl1)
                         <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 5">
-                                <i class="bi bi-play-btn-fill fs-1 text-danger"></i>   
+                                <i class="bi bi-play-btn-fill text-danger video-icon-big"></i>  
                         </a>
                         @php $slideOffset++; @endphp
                     @endif
 
                     @if($producto->videoUrl2)
                         <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 6">                           
-                                <i class="bi bi-play-btn-fill fs-1 "></i>
+                                <i class="bi bi-play-btn-fill video-icon-big"></i>
                         </a>
                     @endif
 
@@ -58,7 +58,7 @@
                         </div>
                         <!-- Video 1 -->
                         @if($producto->videoUrl1)
-                            <div class="carousel-item">
+                            <div class="carousel-item justify-content-center" >
                                 <div class="ratio ratio-16x9">
                                     <iframe id="video1"
                                         src="{{ $producto->getYoutubeEmbed($producto->videoUrl1) }}?rel=0&mute=1"
@@ -70,7 +70,7 @@
 
                         <!-- Video 2 -->
                         @if($producto->videoUrl2)
-                            <div class="carousel-item">
+                            <div class="carousel-item justify-content-center">
                                 <div class="ratio ratio-16x9">
                                     <iframe id="video2"
                                         src="{{ $producto->getYoutubeEmbed($producto->videoUrl2) }}?rel=0&mute=1"
@@ -205,5 +205,13 @@
         }
     });
 </script>
+<style>
+    .video-icon-big {
+        font-size: 3.5rem; /* o lo que prefieras */
+        margin-top: 10px;
+        margin-left:auto;
+    }
+</style>
+
 
 @endsection
