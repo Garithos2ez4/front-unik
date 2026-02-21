@@ -12,7 +12,7 @@ class ProductoController extends Controller
 {
     protected $headerService;
     protected $productoService;
-    
+
     public function __construct(HeaderServiceInterface $headerService,
                                 ProductoServiceInterface $productoService)
     {
@@ -26,19 +26,21 @@ class ProductoController extends Controller
         $marcas = $this->headerService->obtenerMarcas();
         $tipos = $this->headerService->obtenerTipo();
         $tipoCambio = $this->headerService->obtenerCambioDolar();
-        
+        $tipoCambioFijo = $this->headerService->obtenerCambioDolarFijo();
+
         //Variables propias del controlador
         $producto = $this->productoService->getOneProducto($product);
         $miUrl = URL::current();
-        
+
         $productosCategoria = $this->productoService->getProductosByCategoria($producto->GrupoProducto->idCategoria,17);
-        
+
         return view('producto',[
                     'categorias' => $categorias,
                     'empresa' => $empresa,
                     'marcas' => $marcas,
                     'tipos' => $tipos,
                     'tipoCambio' => $tipoCambio,
+                    'tipoCambioFijo' => $tipoCambioFijo,
                     'producto' => $producto,
                     'miUrl' => $miUrl,
                     'productosCategoria' => $productosCategoria

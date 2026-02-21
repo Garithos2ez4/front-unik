@@ -28,6 +28,7 @@ class MarcaController extends Controller
         $marcas = $this->headerService->obtenerMarcas();
         $tipos = $this->headerService->obtenerTipo();
         $tipoCambio = $this->headerService->obtenerCambioDolar();
+        $tipoCambioFijo = $this->headerService->obtenerCambioDolarFijo();
         
         //Variables propias del controlador
         $marca = $this->marcaService->getMarcaBySlug($slug);

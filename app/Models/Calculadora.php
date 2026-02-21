@@ -13,7 +13,8 @@ class Calculadora extends Model
 
     protected $guarded = ['idCalculadora'];
     
-    protected $fillable = ['igv'
+    protected $fillable = [
+        'igv',
                             ];
 
     
@@ -24,7 +25,7 @@ class Calculadora extends Model
     
     protected $casts = [
         'idCalculadora' => 'int',
-        'igv' => 'float'
+        'igv' => 'float',
     ];
 
     /**

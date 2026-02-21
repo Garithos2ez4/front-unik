@@ -38,7 +38,8 @@ class Producto extends Model
                             'videoUrl1',  
                             'videoUrl2',
                             'estadoProductoWeb',
-                            'slugProducto'
+                            'slugProducto',
+                            'usar_tc_fijo'
                             ];
 
     
@@ -56,7 +57,8 @@ class Producto extends Model
         'stockTienda' => 'int',
         'stockColombia' => 'int',
         'stockProveedor' => 'int',
-        'idProveedor' => 'int'
+        'idProveedor' => 'int',
+        'usar_tc_fijo' => 'boolean'
     ];
 
     public static function boot()
@@ -104,12 +106,12 @@ class Producto extends Model
     
     public function precioTotalDolar($preciosService)
     {
-        return number_format($preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->estadoProductoWeb, $this->gananciaExtra), 1, '.', ',') . '0';
+        return number_format($preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->estadoProductoWeb, $this->gananciaExtra,$this), 1, '.', ',') . '0';
     }
 
     public function precioTotalSol($preciosService)
     {
-        return number_format($preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'SOL', $this->estadoProductoWeb, $this->gananciaExtra), 1, '.', ',') . '0';
+        return number_format($preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'SOL', $this->estadoProductoWeb, $this->gananciaExtra,$this), 1, '.', ',') . '0';
     }
     
     public function publicImages(){

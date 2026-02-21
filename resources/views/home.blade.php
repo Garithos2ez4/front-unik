@@ -13,12 +13,12 @@
           @foreach($banners->where('tipoPublicidad','BANNER') as $banner)
             @if($contador == 0)
                 <div class="carousel-item active">
-                  <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100" >
+                  {{-- <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100" > --}}
                 </div>
                 @php $contador++;  @endphp
             @else
                 <div class="carousel-item">
-                  <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100" >
+                 {{-- <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100" > --}}
                 </div>
                 @php $contador++;  @endphp
             @endif
@@ -52,11 +52,11 @@
   <div class="row " >
         <div class="col-12 col-md-3 d-flex justify-content-center align-items-end pb-2 pe-0 mb-4">
             <div class="text-center pe-2">
-                <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner6')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
+                {{--<img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner6')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" > --}}
             </div>
         </div>
         <div class="col-12 col-md-9 mb-4">
-            <x-slider_medio :producto="$exclusivos" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Exclusivos y Ofertas'" :sizeCardMed="'25%'" :slideMedio="3" :slideSmall="4" :link="route('ofertas')"/>      
+            <x-slider_medio :producto="$exclusivos" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Exclusivos y Ofertas'" :sizeCardMed="'25%'" :slideMedio="3" :slideSmall="4" :link="route('ofertas')"/>
         </div>
     </div>
   <br>
@@ -78,12 +78,12 @@
     </div>
       <div class="col-12 col-md-3  d-flex justify-content-center align-items-end pb-2 ps-0">
           <div class="text-center ps-2">
-            <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner8')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" >
+           {{-- <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner8')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow img-vertical" > --}}
           </div>
       </div>
   </div>
   <br>
-    
+
  <div class="row">
      <div class="col-12">
          <x-slider_medio :producto="$lapGamer" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Laptops Gamer'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('categoria', ['laptops','laptop-gamer'])"/>

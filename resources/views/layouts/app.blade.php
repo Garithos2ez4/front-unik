@@ -11,7 +11,7 @@
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="@yield('og_site_name', $empresa->nombreComercial)">
-    
+
     <link rel="icon" href="{{asset('storage/'.$empresa->icon)}}" type="image/webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
      <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
@@ -30,29 +30,29 @@
     <div class="wrapper">
     <header class="mb-2">
         <form action="{{ route('buscar') }}" method="GET" >
-        <div class="container ">
-            <div class="row align-items-center">
-                <div class="col-4 text-start d-block d-md-none ">
-                    <a data-bs-toggle="offcanvas" href="#offcanvasnav" role="button" aria-controls="offcanvasnav" style="color:{{$empresa->colorUno}}">
-                        <i class="bi bi-list" style="font-size: 3rem"></i>
-                    </a>
+            <div class="container ">
+                <div class="row align-items-center">
+                    <div class="col-4 text-start d-block d-md-none ">
+                        <a data-bs-toggle="offcanvas" href="#offcanvasnav" role="button" aria-controls="offcanvasnav" style="color:{{$empresa->colorUno}}">
+                            <i class="bi bi-list" style="font-size: 3rem"></i>
+                        </a>
+                    </div>
+                <div class="col-8 col-md-2 text-end">
+                    <a href="{{$empresa->linkPaginaWeb}}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100"></a>
                 </div>
-              <div class="col-8 col-md-2 text-end">
-                <a href="{{$empresa->linkPaginaWeb}}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100"></a>
-              </div>
-              <div class="col-12 col-md-9 align-middle">
-                  <div class="input-group align-middle">
-                      <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></button></i></div>
-                            <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
-                            <ul class="list-group" id="suggestions" style="position:absolute;top: 100%; left: 0; width: 100%;z-index:1100"></ul>
-                    </div>                   
-              </div>
-              <div class="col-md-1 text-center d-none d-md-block">
-                  <h6>{{$tipoCambio}}</h6>
-                  <h6>PEN</h6>
-              </div>
+                <div class="col-12 col-md-9 align-middle">
+                    <div class="input-group align-middle">
+                        <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></button></i></div>
+                                <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
+                                <ul class="list-group" id="suggestions" style="position:absolute;top: 100%; left: 0; width: 100%;z-index:1100"></ul>
+                        </div>
+                </div>
+                    <div class="col-md-1 text-center d-none d-md-block">
+                        <h6>{{$tipoCambio}}</h6>
+                        <h6>PEN</h6>
+                    </div>
+                </div>
             </div>
-        </div>
         </form>
     </header>
     <nav>
@@ -104,7 +104,7 @@
                   <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Reviews</a></li>
                 </ul>
             </div>
-            
+
           </div>
         </div>
     </nav>
@@ -136,28 +136,28 @@
                     @endforeach
                   </ul>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
-                    <a class="nav-link text-decoration-underline"  style="color:{{$empresa->colorDos}}" href="{{route('ofertas')}}">Ofertas</a> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link text-decoration-underline"  style="color:{{$empresa->colorDos}}" href="{{route('ofertas')}}">Ofertas</a>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#multiCollapseMarcas" role="button" aria-expanded="false" aria-controls="multiCollapseMarcas">Marcas</a>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
-                    <a class="nav-link"  href="{{route('mediodepago')}}">Medios de pago</a> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link"  href="{{route('mediodepago')}}">Medios de pago</a>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
-                    <a class="nav-link" href="{{route('envios')}}">Envíos</a> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link" href="{{route('envios')}}">Envíos</a>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
-                    <a class="nav-link"   href="#">Blog</a> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link"   href="#">Blog</a>
                 </li>
-                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink"> 
-                    <a class="nav-link"  href="#">Reviews</a> 
+                <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-link"  href="#">Reviews</a>
                 </li>
               </ul>
             </div>
           </div>
-          
+
         </nav>
         <div class="container">
             <div class="position-relative">
@@ -173,7 +173,7 @@
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
      <div style="position:fixed;right:2%;bottom:10%;z-index:3000">
@@ -225,8 +225,8 @@
                             @if($red->idRedSocial != 5)
                             <img src="{{asset('storage/'.$red->imagen)}}" alt="{{$red->RedSocial->plataforma}}" width="25" height="25" class="rounded-3">
                             <a href="{{$red->enlace}}" target="_blank" rel="noopener noreferrer" class="text-light text-decoration-none">{{$red->RedSocial->plataforma}}</a>
-                            <br> 
-                            <br> 
+                            <br>
+                            <br>
                             @endif
                         @endforeach
                     </div>
@@ -236,7 +236,7 @@
         <br>
         <p class="text-center text-secondary">Copyright  {{ date('Y') }} &copy; {{$empresa->razonSocial}}. Todos los derechos reservados</p>
         <br>
-        <p class="text-end pe-2"><small class="text-hidden">By Leonardo.M.H. - Luigui C.O - Alonso D.C.R</small></p>        
+        <p class="text-end pe-2"><small class="text-hidden">By Leonardo.M.H. - Luigui C.O - Alonso D.C.R</small></p>
     </footer>
     </div>
     @stack('scripts')

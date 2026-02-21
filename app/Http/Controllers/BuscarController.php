@@ -34,25 +34,26 @@ class BuscarController extends Controller
         $marcas = $this->headerService->obtenerMarcas();
         $tipos = $this->headerService->obtenerTipo();
         $tipoCambio = $this->headerService->obtenerCambioDolar();
+        $tipoCambioFijo = $this->headerService->obtenerCambioDolarFijo();
         //Variables propias del controlador
         $obt = $request->input('header');
         if(!empty($obt)){
 
-            
+
            session(['buscar' => $obt]);
         }
-        
+
         $productos = $this->productoService->searchProductsFilter('partNumber', session()->get('buscar', $obt), 32, $request);
-   
+
         if ($productos->isEmpty()) {
             $productos = $this->productoService->searchProductsFilter('nombreProducto', session()->get('buscar', $obt), 32, $request);
-        }   
-      
+        }
+
         if ($productos->isEmpty()) {
             $productos = $this->productoService->searchProductsFilter('modelo', session()->get('buscar', $obt), 32, $request);
         }
-          
-      
+
+
         if($request->query('page') || $request->query('filtro')){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
@@ -60,26 +61,27 @@ class BuscarController extends Controller
 
         //variables de los filtros
         $filtros = $this->productoService->searchFiltros('nombreProducto',session()->get('buscar',$obt));
-        
+
         return view('buscar',[
                     'categorias' => $categorias,
                     'empresa' => $empresa,
                     'marcas' => $marcas,
                     'tipos' => $tipos,
                     'tipoCambio' => $tipoCambio,
+                    'tipoCambioFijo'=> $tipoCambioFijo,
                     'obt' => $obt,
                     'productos' => $productos,
                     'filtros' => $filtros
 ]);
     }
-    
+
     public function search(Request $request)
     {
         $query = $request->input('query');
 
         $results = $this->buscarService->searchProducts($query);
-    
-                
+
+
         return response()->json($results);
     }
 }

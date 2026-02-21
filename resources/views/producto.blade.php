@@ -29,17 +29,22 @@
                     <!-- Miniaturas en el lado izquierdo -->
                     @if($producto->videoUrl1)
                         <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 5">
-                                <i class="bi bi-play-btn-fill text-danger video-icon-big"></i>  
+                            <div class="position-relative">
+                                <img src="{{ asset('storage/'.$empresa->logo) }}" class="d-block w-100 productimg border" style="opacity: 0.3;" alt="...">
+                                <i class="bi bi-youtube position-absolute top-50 start-50 translate-middle" style="font-size: 2rem; color: rgba(255, 0, 0, 1.0);"></i>
+                            </div>
                         </a>
                         @php $slideOffset++; @endphp
                     @endif
 
                     @if($producto->videoUrl2)
-                        <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 6">                           
-                                <i class="bi bi-play-btn-fill video-icon-big"></i>
+                        <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $slideOffset }}" aria-label="Slide 6">
+                            <div class="position-relative">
+                                <img src="{{ asset('storage/' . $producto->MarcaProducto->imagenMarca) }}" class="d-block w-100 productimg border" style="opacity: 0.3;" alt="...">                           
+                                <i class="bi bi-youtube position-absolute top-50 start-50 translate-middle" style="font-size: 1rem; color: rgba(255, 0, 0, 1.0);"></i>
+                            </div>
                         </a>
-                    @endif
-
+                    @endif                   
                 </div>
                 <div class="col-12 col-md-10">
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
@@ -205,13 +210,4 @@
         }
     });
 </script>
-<style>
-    .video-icon-big {
-        font-size: 3.5rem; /* o lo que prefieras */
-        margin-top: 10px;
-        margin-left:auto;
-    }
-</style>
-
-
 @endsection

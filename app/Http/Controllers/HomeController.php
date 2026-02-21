@@ -23,7 +23,8 @@ class HomeController extends Controller
         $marcas = $this->headerService->obtenerMarcas();
         $tipos = $this->headerService->obtenerTipo();
         $tipoCambio = $this->headerService->obtenerCambioDolar();
-        
+        $tipoCambioFijo = $this->headerService->obtenerCambioDolarFijo();
+
         //Variables propias del controlador
         $banners = $this->homeService->getPublicidad($empresa->idEmpresa);
         $monitores = $this->homeService->getProductsByMonitores();
@@ -31,13 +32,14 @@ class HomeController extends Controller
         $impresoras = $this->homeService->getProductsByImpresoras();
         $accesorios = $this->homeService->getAccesorios();
         $exclusivos = $this->homeService->getExclusivos();
-        
+
         return view('home',[
                     'categorias' => $categorias,
                     'empresa' => $empresa,
                     'marcas' => $marcas,
                     'tipos' => $tipos,
                     'tipoCambio' => $tipoCambio,
+                    'tipoCambioFijo' =>$tipoCambioFijo,
                     'banners' => $banners,
                     'monitores' => $monitores,
                     'lapGamer' => $lapGamer,
