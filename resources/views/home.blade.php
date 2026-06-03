@@ -60,7 +60,7 @@
         </div>
     </div>
   <br>
-  @if(!empty($banners->where('descripcionPublicidad','Banner9')->first()->imagenPublicidad))
+  @if(!empty($banners->where('descripcionPublicidad','Banner9')->first()?->imagenPublicidad))
   <div class="row">
       <img src="{{asset('storage/'.$banners->where('descripcionPublicidad','Banner9')->first()->imagenPublicidad)}}" alt="" class="rounded-3 border shadow" >
   </div>

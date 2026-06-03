@@ -72,9 +72,11 @@
                         <div class="collapse multi-collapse" id="collapseCategoryOffCanva">
                           <ul class="list-group list-group-flush pt-1">
                                @foreach($categorias as $categoria)
+                                @if($categoria->GrupoProducto->isNotEmpty())
                                 <li class="list-group-item" >
                                     <a class="text-decoration-none" style="color:{{$empresa->colorUno}}" href="{{ route('categoria', [$categoria->slugCategoria, $categoria->GrupoProducto->first()->slugGrupo]) }}">{{ $categoria->nombreCategoria }}</a>
                                 </li>
+                                @endif
                                 @endforeach
                           </ul>
                         </div>
