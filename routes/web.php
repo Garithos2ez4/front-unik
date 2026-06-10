@@ -46,8 +46,9 @@ Route::get('/producto/{slug}', [ProductoController::class, 'index'])->name('prod
 Route::get('/ofertas', [OfertasController::class,'index'])->name('ofertas');
 Route::get('/mediodepago', [MedioDePagoController::class,'index'])->name('mediodepago');
 Route::get('/envios', [EnviosController::class,'index'])->name('envios');
-Route::get('/blog', [BlogController::class,'index'])->name('blog');
 Route::get('/reviews', [ReviewsController::class,'index'])->name('reviews');
+Route::post('/reviews', [ReviewsController::class,'store'])->name('reviews.store');
+Route::get('/reviews/cliente/{documento}', [ReviewsController::class,'buscarCliente'])->name('reviews.cliente');
 Route::get('/privacidad', [PrivacidadController::class,'index'])->name('privacidad');
 Route::get('/garantia', [GarantiaController::class,'index'])->name('garantia');
 Route::get('/nosotros', [NosotrosController::class,'index'])->name('nosotros');

@@ -183,8 +183,53 @@
         </div>
     </div>
     
-    <div class="row">
-        
+    <!-- Sección de Reviews del Producto -->
+    <div class="row border-bottom border-dark mt-4">
+        <h4>Valoración de Clientes</h4>
+    </div>
+    <div class="row mt-3">
+        @if($producto->reviews->count() > 0)
+            <div class="row" data-masonry='{"percentPosition": true }'>
+                @foreach($producto->reviews as $review)
+                <div class="col-sm-6 col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0" style="background-color: rgba(255, 255, 255, 0.9);">
+                        @if($review->imagen_setup)
+                            <img src="{{ $review->imagen_setup }}" class="card-img-top" alt="Setup de {{ $review->cliente->nombre ?? 'Cliente' }}" style="object-fit: cover; height: 200px;">
+                        @endif
+                        <div class="card-body">
+                            <div class="mb-2">
+                                @for($i = 0; $i < 5; $i++)
+                                    @if($i < $review->calificacion)
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    @else
+                                        <i class="bi bi-star text-warning"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="card-text fw-bold" style="color: {{$empresa->colorUno}}">"{{ $review->comentario }}"</p>
+                            <hr class="text-muted">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0 fw-bold fs-6">{{ $review->cliente->nombre ?? 'Cliente' }}</h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-check-circle-fill text-success"></i> Verificado</small>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.75rem;">{{ $review->created_at->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <!-- Include Masonry JS if it's not loaded globally -->
+            <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
+        @else
+            <div class="col-12">
+                <div class="alert alert-light text-center" role="alert">
+                    <i class="bi bi-chat-left-dots fs-3 text-muted"></i>
+                    <p class="mb-0 mt-2">Aún no hay reseñas para este producto. ¡Sé el primero en compartir tu experiencia!</p>
+                </div>
+            </div>
+        @endif
     </div>
     <br>
     <div class="row">

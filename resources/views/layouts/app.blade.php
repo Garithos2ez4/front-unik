@@ -117,8 +117,7 @@
                             </li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('mediodepago')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Medios de pago</a></li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('envios')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Envios</a></li>
-                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Blogs</a></li>
-                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Reviews</a></li>
+                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('reviews')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Reviews & Comunidad</a></li>
                         </ul>
                     </div>
 
@@ -166,10 +165,7 @@
                             <a class="nav-link" href="{{route('envios')}}">Envíos</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="nav-link" href="#">Blog</a>
-                        </li>
-                        <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="nav-link" href="#">Reviews</a>
+                            <a class="nav-link" href="{{route('reviews')}}">Reviews & Comunidad</a>
                         </li>
                     </ul>
                 </div>

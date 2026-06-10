@@ -101,7 +101,12 @@ class Producto extends Model
     
     public function Caracteristicas_Producto()
     {
-        return $this->hasMany(Caracteristicas_Producto::class,'idProducto','idProducto');
+        return $this->hasMany(Caracteristicas_Producto::class, 'idProducto', 'idProducto');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'idProducto', 'idProducto')->where('estado', 1);
     }
     
     public function precioTotalDolar($preciosService)
