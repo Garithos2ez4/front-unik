@@ -147,7 +147,7 @@
             <div class="row g-3">
                 <div class="col-md-12">
                     <label class="form-label">¿De qué producto opinas? (Opcional)</label>
-                    <select name="idProducto" class="form-select">
+                    <select name="idProducto" id="idProducto" class="form-select" placeholder="Busca un producto...">
                         <option value="">Reseña general de la tienda</option>
                         @foreach($productos as $prod)
                             <option value="{{ $prod->idProducto }}">{{ $prod->nombreProducto }}</option>
@@ -189,8 +189,30 @@
 @push('scripts')
 <!-- Masonry JS for Pinterest style layout -->
 <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
+<!-- Tom Select CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar TomSelect para el select de productos
+        const tsProducto = new TomSelect('#idProducto', {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+
+        // Revisar si venimos de la pagina de un producto
+        const urlParams = new URLSearchParams(window.location.search);
+        const prodId = urlParams.get('prod');
+        if (prodId) {
+            tsProducto.setValue(prodId);
+            const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+            reviewModal.show();
+        }
+
         const stars = document.querySelectorAll('.star-rating');
         const calificacionInput = document.getElementById('calificacionInput');
 
