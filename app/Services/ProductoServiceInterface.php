@@ -15,4 +15,5 @@ interface ProductoServiceInterface
     public function searchFiltros($column,$data);
     public function getProductsFilter($column,$data,$cantidad,Request $request);
     public function searchProductsFilter($column,$data,$cantidad,Request $request);
+    public function searchProductsMulti($data,$cantidad,Request $request);
 }

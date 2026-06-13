@@ -98,6 +98,43 @@ class ProductoRepository implements ProductoRepositoryInterface
         return   $query->paginate($cant);
     }
 
+    public function searchPaginationMultiColumn($data, $cant, array $querys){
+        $query = Producto::query();
+        $query->where('estadoProductoWeb','<>','DESCONTINUADO');
+        $query->where(function($q) use ($data) {
+            $q->where('partNumber','LIKE', '%' . $data . '%')
+              ->orWhere('nombreProducto','LIKE', '%' . $data . '%')
+              ->orWhere('modelo','LIKE', '%' . $data . '%');
+        });
+
+        if($querys){
+            if (isset($querys['caracteristicas'])) {
+                $query->join('Caracteristicas_Producto','Caracteristicas_Producto.idProducto','=','Producto.idProducto')
+                    ->whereIn('Caracteristicas_Producto.caracteristicaProducto',$querys['caracteristicas'])
+                    ->select('Producto.*')
+                    ->distinct();
+            }
+
+            if (isset($querys['dispo'])) {
+                $query->whereIn('estadoProductoWeb', $querys['dispo']);
+            }
+
+            if (isset($querys['marcas'])) {
+                $query->whereIn('idMarca', $querys['marcas']);
+            }
+
+            if (isset($querys['grupos'])) {
+                $query->whereIn('idGrupo', $querys['grupos']);
+            }
+
+            if(isset($querys['orden'])){
+                $query->orderBy('precioDolar', $querys['orden']);
+            }
+        }
+
+        return $query->paginate($cant);
+    }
+
     public function getAllByCategoria($idCategoria){
         return Producto::join('GrupoProducto','GrupoProducto.idGrupoProducto','=','Producto.idGrupo')
                         ->select('Producto.*')->where('Producto.estadoProductoWeb','<>','DESCONTINUADO')

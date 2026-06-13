@@ -12,7 +12,7 @@
             <h3 class="text-center text-black-50">{{$grupo->nombreGrupo}}</h3>
         @endif
     <div class="row">
-        <div id="carruselGrupos" class="carousel slide d-none d-sm-block" data-bs-ride="carousel" data-bs-interval="false" style="height:20vh">
+        <div id="carruselGrupos" class="carousel slide d-none d-sm-block mb-3" data-bs-ride="carousel" data-bs-interval="false">
         <div class="carousel-inner">
           @php
             $chunks = $categoria->GrupoProducto->chunk(5);
@@ -38,7 +38,7 @@
                               alt="Marca {{ $loop->parent->iteration }}" 
                               width="80%" 
                               class="rounded-3 group-hover group-img-hover {{$grup->idGrupoProducto == $grupo->idGrupoProducto ? 'group-selected' : ''}} ">
-                        <h4>{{$grup->nombreGrupo}}</h4>
+                        <h5 class="mt-2 fw-bold" style="font-size: 1.05rem; line-height: 1.2;">{{$grup->nombreGrupo}}</h5>
                     </a>
                   </div>
                 @endforeach
@@ -60,7 +60,7 @@
           <span class="text-dark {{$dis}}"><i class="bi bi-arrow-bar-right" style="font-size: 3rem"></i></span>
         </button>
       </div>
-      <div id="carruselGruposSmart" class="carousel slide d-block d-md-none" data-bs-ride="carousel" data-bs-interval="false"  style="height:10vh">
+      <div id="carruselGruposSmart" class="carousel slide d-block d-md-none mb-3" data-bs-ride="carousel" data-bs-interval="false">
         <div class="carousel-inner">
           @php
             $chunks = $categoria->GrupoProducto->chunk(3);
@@ -86,7 +86,7 @@
                               alt="Marca {{ $loop->parent->iteration }}" 
                               width="80%" 
                               class="border rounded-3 {{$grup->idGrupoProducto == $grupo->idGrupoProducto ? 'group-selected' : ''}}">
-                        <p>{{$grup->nombreGrupo}}</p>
+                        <p class="mt-2 fw-bold" style="font-size: 0.85rem; line-height: 1.2;">{{$grup->nombreGrupo}}</p>
                     </a>
                   </div>
                 @endforeach

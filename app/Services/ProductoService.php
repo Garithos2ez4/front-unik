@@ -83,6 +83,15 @@ class ProductoService implements ProductoServiceInterface
         return $productos;
     }
 
+    public function searchProductsMulti($data,$cantidad,Request $request){
+        $consultas = array();
+        if($request->query('filtro')){
+            $consultas = $request->query('filtro');
+        }
+        $productos = $this->productoRepository->searchPaginationMultiColumn($data,$cantidad,$consultas);
+        return $productos;
+    }
+
     private function getParametros($productos){
         $disponibilidad = $productos->unique('estadoProductoWeb')->pluck('estadoProductoWeb');
         $marcas = $productos->load('MarcaProducto')->pluck('MarcaProducto')->unique('idMarca'); 
