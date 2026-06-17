@@ -198,6 +198,13 @@
         </div>
         <main class="content">
             @yield('content')
+            @php
+                $productoService = app('App\Services\ProductoServiceInterface');
+                $ultimosProductos = $productoService->getLatestProducts(15);
+            @endphp
+            <div class="container mt-4 mb-4">
+                <x-slider_medio :producto="$ultimosProductos" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Nuevos Ingresos'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('novedades')"/>
+            </div>
         </main>
 
         <footer class="text-white mt-auto" style="background-color:{{$empresa->colorUno}}">

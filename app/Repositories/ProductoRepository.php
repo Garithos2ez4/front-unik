@@ -68,6 +68,40 @@ class ProductoRepository implements ProductoRepositoryInterface
         return   $query->paginate($cant);
     }
 
+    public function getLatestProductsPagination($limit, array $querys){
+        $latestIds = Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
+            ->orderBy('idProducto', 'desc')
+            ->take($limit)
+            ->pluck('idProducto');
+
+        $query = Producto::query()->whereIn('Producto.idProducto', $latestIds);
+
+        if($querys){
+            if (isset($querys['caracteristicas'])) {
+                $query->join('Caracteristicas_Producto','Caracteristicas_Producto.idProducto','=','Producto.idProducto')
+                    ->whereIn('Caracteristicas_Producto.caracteristicaProducto',$querys['caracteristicas'])
+                    ->select('Producto.*')->distinct();
+            }
+
+            if (isset($querys['dispo'])) {
+                $query->whereIn('estadoProductoWeb', $querys['dispo']);
+            }
+
+            if (isset($querys['marcas'])) {
+                $query->whereIn('idMarca', $querys['marcas']);
+            }
+
+            if (isset($querys['grupos'])) {
+                $query->whereIn('idGrupo', $querys['grupos']);
+            }
+
+            if(isset($querys['orden'])){
+                $query->orderBy('precioDolar', $querys['orden']);
+            }
+        }
+        return $query->paginate($limit);
+    }
+
     public function searchPaginationByColumn($column,$data,$cant,array $querys){
         $query = Producto::query();
         $query->where('estadoProductoWeb','<>','DESCONTINUADO');
@@ -140,6 +174,13 @@ class ProductoRepository implements ProductoRepositoryInterface
                         ->select('Producto.*')->where('Producto.estadoProductoWeb','<>','DESCONTINUADO')
                         ->where('GrupoProducto.idCategoria','=',$idCategoria)
                         ->get();
+    }
+
+    public function getLatestProducts($limit = 15) {
+        return Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
+                       ->orderBy('idProducto', 'desc')
+                       ->take($limit)
+                       ->get();
     }
 
     public function getSpectsByColumn($column,$data){

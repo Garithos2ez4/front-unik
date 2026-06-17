@@ -92,6 +92,26 @@ class ProductoService implements ProductoServiceInterface
         return $productos;
     }
 
+    public function getLatestProductsPagination($limit, Request $request){
+        $consultas = array();
+        if($request->query('filtro')){
+            $consultas = $request->query('filtro');
+        }
+        $productos = $this->productoRepository->getLatestProductsPagination($limit, $consultas);
+        return $productos;
+    }
+
+    public function getFiltrosLatest($limit) {
+        $productos = $this->productoRepository->getLatestProducts($limit);
+        $filtros = $this->getParametros($productos);
+        return $filtros;
+    }
+
+    public function getLatestProducts($limit = 15) {
+        $productos = $this->productoRepository->getLatestProducts($limit);
+        return $productos->shuffle();
+    }
+
     private function getParametros($productos){
         $disponibilidad = $productos->unique('estadoProductoWeb')->pluck('estadoProductoWeb');
         $marcas = $productos->load('MarcaProducto')->pluck('MarcaProducto')->unique('idMarca'); 

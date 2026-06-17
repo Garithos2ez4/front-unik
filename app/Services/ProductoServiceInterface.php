@@ -16,4 +16,7 @@ interface ProductoServiceInterface
     public function getProductsFilter($column,$data,$cantidad,Request $request);
     public function searchProductsFilter($column,$data,$cantidad,Request $request);
     public function searchProductsMulti($data,$cantidad,Request $request);
+    public function getLatestProductsPagination($limit, Request $request);
+    public function getFiltrosLatest($limit);
+    public function getLatestProducts($limit = 15);
 }

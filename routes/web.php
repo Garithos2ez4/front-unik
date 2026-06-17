@@ -9,6 +9,7 @@ use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\BuscarController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\NovedadesController;
 
 use App\Http\Controllers\OfertasController;
 use App\Http\Controllers\MedioDePagoController;
@@ -42,6 +43,7 @@ Route::get('/tipo/{tipo}/{tipGrup}', [TipoController::class, 'index'])->name('ti
 Route::get('/buscar', [BuscarController::class, 'index'])->name('buscar');
 Route::get('/buscar/search', [BuscarController::class, 'search'])->name('search');
 Route::get('/producto/{slug}', [ProductoController::class, 'index'])->name('producto');
+Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades');
 
 Route::get('/ofertas', [OfertasController::class,'index'])->name('ofertas');
 Route::get('/mediodepago', [MedioDePagoController::class,'index'])->name('mediodepago');
