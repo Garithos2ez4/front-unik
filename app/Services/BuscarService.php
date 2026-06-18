@@ -17,20 +17,20 @@ class BuscarService implements BuscarServiceInterface
     }
 
     public function searchProducts($query){
-        $productos = $this->productoRepository->searchByColumn('nombreProducto',$query)
+        $productos = $this->productoRepository->searchCarrouselByColumn('nombreProducto',$query)
                                                 ->take(6)
                                                 ->map(function ($producto) {
-                                                    // Agregar las URLs de las im��genes al producto
+                                                    // Agregar las URLs de las imgenes al producto
                                                     $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
                                                     $producto->precioTotalSol = $producto->precioTotalSol($this->preciosService);
                                                     $producto->imageUrls = $producto->publicImages();
                                                     return $producto;
                                                 });
         if($productos->isEmpty()){
-            $productos = $this->productoRepository->searchByColumn('modelo',$query)
+            $productos = $this->productoRepository->searchCarrouselByColumn('modelo',$query)
                                                     ->take(6)
                                                     ->map(function ($producto) {
-                                                        // Agregar las URLs de las im��genes al producto
+                                                        // Agregar las URLs de las imgenes al producto
                                                         $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
                                                         $producto->precioTotalSol = $producto->precioTotalSol($this->preciosService);
                                                         $producto->imageUrls = $producto->publicImages();

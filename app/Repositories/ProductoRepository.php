@@ -202,4 +202,30 @@ class ProductoRepository implements ProductoRepositoryInterface
             throw new \InvalidArgumentException("La columna '$column' no es válida.");
         }
     }
+
+    public function getCarrouselAllByColumn($column, $data) {
+        $this->validateColumns($column);
+        return Producto::conHistorialRegistro()->where('estadoProductoWeb','<>','DESCONTINUADO')->where($column,'=',$data)->get();
+    }
+
+    public function getCarrouselAllByCategoria($idCategoria) {
+        return Producto::conHistorialRegistro()
+                        ->join('GrupoProducto','GrupoProducto.idGrupoProducto','=','Producto.idGrupo')
+                        ->select('Producto.*')->where('Producto.estadoProductoWeb','<>','DESCONTINUADO')
+                        ->where('GrupoProducto.idCategoria','=',$idCategoria)
+                        ->get();
+    }
+
+    public function searchCarrouselByColumn($column, $data) {
+        $this->validateColumns($column);
+        return Producto::conHistorialRegistro()->where('estadoProductoWeb','<>','DESCONTINUADO')->where($column, 'LIKE', '%' . $data . '%')->get();
+    }
+
+    public function getLatestCarrouselProducts($limit = 15) {
+        return Producto::conHistorialRegistro()
+                       ->where('estadoProductoWeb','<>','DESCONTINUADO')
+                       ->orderBy('idProducto', 'desc')
+                       ->take($limit)
+                       ->get();
+    }
 }

@@ -13,6 +13,10 @@ interface ProductoRepositoryInterface {
     public function searchPaginationMultiColumn($data,$cant,array $querys);
     public function getLatestProducts($limit = 15);
     public function getAllByCategoria($idCategoria);
+    public function getCarrouselAllByColumn($column, $data);
+    public function getCarrouselAllByCategoria($idCategoria);
+    public function searchCarrouselByColumn($column, $data);
+    public function getLatestCarrouselProducts($limit = 15);
     public function getSpectsByColumn($column,$data);
     public function create(array $data);
     public function update($id, array $data);

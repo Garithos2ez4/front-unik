@@ -108,7 +108,7 @@ class ProductoService implements ProductoServiceInterface
     }
 
     public function getLatestProducts($limit = 15) {
-        $productos = $this->productoRepository->getLatestProducts($limit);
+        $productos = $this->productoRepository->getLatestCarrouselProducts($limit);
         return $productos->shuffle();
     }
 

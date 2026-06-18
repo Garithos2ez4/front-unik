@@ -73,6 +73,16 @@ class Producto extends Model
             $producto->slugProducto = Str::slug($producto->nombreProducto);
         });
     }
+
+    public function scopeConHistorialRegistro($query)
+    {
+        return $query->whereExists(function ($subquery) {
+            $subquery->select(\Illuminate\Support\Facades\DB::raw(1))
+                     ->from('RegistroProducto')
+                     ->join('DetalleComprobante', 'DetalleComprobante.idDetalleComprobante', '=', 'RegistroProducto.idDetalleComprobante')
+                     ->whereColumn('DetalleComprobante.idProducto', 'Producto.idProducto');
+        });
+    }
     
     public function Publicacion()
     {
