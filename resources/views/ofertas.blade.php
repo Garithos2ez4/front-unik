@@ -12,8 +12,5 @@
         <x-card_producto_medio :storage="$productos" :colsmall="6" :colmedio="3" :empres="$empresa" :cantCards="16" :filtros="$filtros" />
     </div>
     <br>
-    <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
-    <br>
-    <br>
 </div>
 @endsection

@@ -119,7 +119,15 @@
     </div>
     <br>
     <br>
-    <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
+    <div class="row">
+        @php
+            $productoService = app('App\Services\ProductoServiceInterface');
+            $sugerencias = $productoService->getProductosByCategoria($categoria->idCategoria, 15);
+        @endphp
+        <div class="col-12">
+            <x-slider_medio :producto="$sugerencias" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Productos Sugeridos'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="'#'"/>
+        </div>
+    </div>
 </div>
 <br>
 <br>

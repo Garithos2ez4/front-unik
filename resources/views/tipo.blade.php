@@ -110,9 +110,17 @@
         </div>
     </div>
     <br>
-    <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
-    <br>
-    <br>
+    <div class="row">
+        @php
+            $productoService = app('App\Services\ProductoServiceInterface');
+            // Use same category or type logic. Let's just pass 15 products randomly from the type or category.
+            // But we don't have $categoria directly accessible. Let's use getProductsFilter.
+            $sugerencias = $productoService->getProductsFilter('idTipo', $tipo->idTipo, 15, request());
+        @endphp
+        <div class="col-12">
+            <x-slider_medio :producto="$sugerencias" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Productos Sugeridos'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="'#'"/>
+        </div>
+    </div>
     @endif
 </div>
 @endsection

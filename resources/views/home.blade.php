@@ -90,10 +90,17 @@
      </div>
  </div>
  <br>
-<br>
-    <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
-<br>
-<br>
+ <div class="row">
+     @php
+         $productoService = app('App\Services\ProductoServiceInterface');
+         $ultimosProductos = $productoService->getLatestProducts(15);
+     @endphp
+     <div class="col-12">
+         <x-slider_medio :producto="$ultimosProductos" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Nuevos Ingresos'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('novedades')"/>
+     </div>
+ </div>
+ <br>
+ <br>
 </div>
 <script>
       document.getElementById('corruselHome').addEventListener('slide.bs.carousel', function (e) {

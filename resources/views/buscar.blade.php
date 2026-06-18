@@ -18,7 +18,6 @@
             </div>
         </div>
         <br>
-        <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
     </div>
     <br>
     <br>
