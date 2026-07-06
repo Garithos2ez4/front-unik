@@ -7,21 +7,27 @@ use App\Models\TipoProducto;
 use App\Models\Producto;
 use App\Models\GrupoProducto;
 use Illuminate\Support\Facades\DB;
-use App\Services\HeaderService;
+use App\Services\HeaderServiceInterface;
 use App\Services\FiltroService;
 
 
 class TipoController extends Controller
 {
+    protected $headerService;
+
+    public function __construct(HeaderServiceInterface $headerService)
+    {
+        $this->headerService = $headerService;
+    }
+
     public function index($slug,$grup,Request $request){
         //Variables para el header,nav y footer
-        $header = new HeaderService();
-        $categorias = $header->obtenerCategorias();
-        $empresa = $header->obtenerEmpresa();
-        $marcas = $header->obtenerMarcas();
-        $tipos = $header->obtenerTipo();
-        $redes = $header->obtenerLinkRedes();
-        $tipoCambio = $header->obtenerCambioDolar();
+        $categorias = $this->headerService->obtenerCategorias();
+        $empresa = $this->headerService->obtenerEmpresa();
+        $marcas = $this->headerService->obtenerMarcas();
+        $tipos = $this->headerService->obtenerTipo();
+        $redes = $this->headerService->obtenerLinkRedes();
+        $tipoCambio = $this->headerService->obtenerCambioDolar();
         
         //Variables propias del controlador
         $slugTipo = TipoProducto::select('idTipoProducto')->where('slugTipo','=',$slug)->first();

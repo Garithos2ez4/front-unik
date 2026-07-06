@@ -10,6 +10,8 @@ interface HeaderServiceInterface  {
 
     public function obtenerTipo();
 
+    public function obtenerLinkRedes();
+
     public function getApiDolar();
 
     function updateTipoCambio($backup);

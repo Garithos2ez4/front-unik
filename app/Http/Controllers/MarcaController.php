@@ -32,6 +32,11 @@ class MarcaController extends Controller
         
         //Variables propias del controlador
         $marca = $this->marcaService->getMarcaBySlug($slug);
+
+        if (!$marca) {
+            abort(404);
+        }
+
         $productos = $this->productoService->getProductsFilter('idMarca',$marca->idMarca,24,$request);
 
         //Lista de productos paginados

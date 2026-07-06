@@ -7,6 +7,7 @@ use App\Repositories\EmpresaRepositoryInterface;
 use App\Repositories\MarcaProductoRepositoryInterface;
 use App\Repositories\registroUpdateRepositoryInterface;
 use App\Repositories\TipoProductoRepositoryInterface;
+use App\Models\EmpresaRedSocial;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -57,7 +58,9 @@ class HeaderService implements HeaderServiceInterface
         return $this->tipoRepository->getAll();
     }
     public function obtenerLinkRedes(){
-        return $this->obtenerLinkRedes()->first();
+        return EmpresaRedSocial::with('RedSocial')
+                    ->where('idEmpresa', self::$id)
+                    ->get();
     }
 
    public function getApiDolar() {
