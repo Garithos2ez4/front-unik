@@ -68,6 +68,18 @@ class PreciosService implements PreciosServiceInterface
     }
 
     public function getPrecioTotal($precio,$grupo,$tipo,$estado,$ganancia,$producto){
+        // Si el producto está en liquidación, anula los cálculos regulares y usa el precio final en Soles
+        if ($producto->DetalleProducto && $producto->DetalleProducto->en_liquidacion && $producto->DetalleProducto->precio_liquidacion > 0) {
+            $precioLiqSoles = $producto->DetalleProducto->precio_liquidacion;
+            
+            if ($tipo == 'SOL') {
+                return $precioLiqSoles;
+            } else {
+                $tipoCambio = $this->getTipoCambioPorProducto($producto);
+                return $tipoCambio > 0 ? ($precioLiqSoles / $tipoCambio) : $precioLiqSoles;
+            }
+        }
+
         $empresa = $this->headerService->obtenerEmpresa();
         $gananciaValidate = $this->validateMoney($ganancia,$tipo,$producto);
         $total = $this->getPrecioCalculado($precio,$grupo,$tipo,$estado,$producto) * $this->porcent($empresa->comision) + $gananciaValidate;
@@ -76,7 +88,14 @@ class PreciosService implements PreciosServiceInterface
 
     private function getTipoCambioPorProducto($producto)
     {
-        if($producto->usar_tc_fijo){
+        // Si el producto tiene un tipo de cambio personalizado, usarlo prioritariamente
+        if (!empty($producto->tc_fijo) && $producto->tc_fijo > 0) {
+            return $producto->tc_fijo;
+        }
+
+        // $producto->usar_tc_fijo == 0 significa "Usar Tipo de Cambio Sunat" APAGADO (usar FIJO GLOBAL)
+        // $producto->usar_tc_fijo == 1 significa "Usar Tipo de Cambio Sunat" ENCENDIDO (usar SUNAT)
+        if(!$producto->usar_tc_fijo){
             return Calculadora::find(2)->tasaCambio; // FIJO
         }
 

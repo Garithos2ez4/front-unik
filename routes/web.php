@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\NovedadesController;
 
 use App\Http\Controllers\OfertasController;
+use App\Http\Controllers\LiquidacionController;
 use App\Http\Controllers\MedioDePagoController;
 use App\Http\Controllers\EnviosController;
 use App\Http\Controllers\BlogController;
@@ -24,12 +25,14 @@ use App\Http\Controllers\LibroReclamacionController;
 use App\Http\Controllers\StyleController;
 use App\Http\Controllers\ScriptController;
 
-Route::get('/', [HomeController::class,'index']);
+use App\Http\Controllers\ClienteAuthController;
+
+Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/css/dynamic-styles.css', [StyleController::class, 'generateStyles'])->name('css.dynamic-styles');
 Route::get('/css/slide-styles.css', [StyleController::class, 'carruselMarcasStyles'])->name('css.carrusel-marcas-styles');
 
 Route::get('/js/slider-scripts/{titulo}/{slideSmall}/{slideMedio}.js', [ScriptController::class, 'sliderScript'])->name('js.slider-scripts');
-Route::get('/js/header-scripts.js', [ScriptController::class, 'headerScripts'])->name('js.header-scripts');
+
 Route::get('/js/filter-scripts.js', [ScriptController::class, 'filterScripts'])->name('js.filter-scripts');
 Route::get('/js/pagination-scripts.js', [ScriptController::class, 'paginationScript'])->name('js.pagination-scripts');
 Route::get('/js/carrusel-marcas-scripts.js', [ScriptController::class, 'carruselMarcasScript'])->name('js.carrusel-marcas-scripts');
@@ -46,6 +49,7 @@ Route::get('/producto/{slug}', [ProductoController::class, 'index'])->name('prod
 Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades');
 
 Route::get('/ofertas', [OfertasController::class,'index'])->name('ofertas');
+Route::get('/liquidacion', [LiquidacionController::class,'index'])->name('liquidacion');
 Route::get('/mediodepago', [MedioDePagoController::class,'index'])->name('mediodepago');
 Route::get('/envios', [EnviosController::class,'index'])->name('envios');
 Route::get('/reviews', [ReviewsController::class,'index'])->name('reviews');
@@ -58,7 +62,38 @@ Route::get('/nosotros', [NosotrosController::class,'index'])->name('nosotros');
 Route::get('/libro-reclamaciones', [LibroReclamacionController::class,'index'])->name('libroreclamacion');
 Route::post('/nuevoreclamo', [LibroReclamacionController::class,'createReclamo'])->name('insertreclamo');
 
+use App\Http\Controllers\CartController;
+
+// ========================================
+// Rutas del Carrito de Compras
+// ========================================
+Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrito/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/carrito/update', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/carrito/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/carrito/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// ========================================
+// Rutas de Checkout / Pasarelas de Pago
+// ========================================
+use App\Http\Controllers\CheckoutController;
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout/mercadopago', [CheckoutController::class, 'processMercadoPago'])->name('checkout.mercadopago');
+Route::post('/checkout/niubiz', [CheckoutController::class, 'processNiubiz'])->name('checkout.niubiz');
+Route::get('/checkout/success/{pedido}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/failure/{pedido}', [CheckoutController::class, 'failure'])->name('checkout.failure');
+Route::get('/checkout/pending/{pedido}', [CheckoutController::class, 'pending'])->name('checkout.pending');
+
+// ========================================
+// Rutas de Autenticacion de Clientes
+// ========================================
+Route::get('/cliente/login', [ClienteAuthController::class, 'showLogin'])->name('cliente.login.form');
+Route::post('/cliente/login', [ClienteAuthController::class, 'login'])->name('cliente.login');
+Route::get('/cliente/registro', [ClienteAuthController::class, 'showRegister'])->name('cliente.register.form');
+Route::post('/cliente/registro', [ClienteAuthController::class, 'register'])->name('cliente.register');
+Route::post('/cliente/logout', [ClienteAuthController::class, 'logout'])->name('cliente.logout');
+Route::get('/api/cliente/buscar', [ClienteAuthController::class, 'searchClientByDocument'])->name('api.cliente.buscar');
+
 Route::get('/laravel', function () {
     return view('welcome');
 });
-

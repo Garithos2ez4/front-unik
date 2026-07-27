@@ -102,6 +102,47 @@ class ProductoRepository implements ProductoRepositoryInterface
         return $query->paginate($limit);
     }
 
+
+
+    public function getLiquidacionProductsPagination($cant, array $querys){
+        $query = Producto::query();
+        $query->where('estadoProductoWeb','<>','DESCONTINUADO');
+        $query->whereHas('DetalleProducto', function($q) {
+            $q->where('en_liquidacion', 1);
+        });
+        
+        if($querys){
+            if (isset($querys['caracteristicas'])) {
+                $query->join('Caracteristicas_Producto','Caracteristicas_Producto.idProducto','=','Producto.idProducto')
+                    ->whereIn('Caracteristicas_Producto.caracteristicaProducto',$querys['caracteristicas']);
+            }
+
+            if (isset($querys['dispo'])) {
+                $query->whereIn('estadoProductoWeb', $querys['dispo']);
+            }
+
+            if (isset($querys['marcas'])) {
+                $query->whereIn('idMarca', $querys['marcas']);
+            }
+
+            if (isset($querys['grupos'])) {
+                $query->whereIn('idGrupo', $querys['grupos']);
+            }
+
+            if(isset($querys['orden'])){
+                $query->orderBy('precioDolar', $querys['orden']);
+            }
+        }
+        return $query->paginate($cant);
+    }
+
+    public function getLiquidacionProducts(){
+        return Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
+            ->whereHas('DetalleProducto', function($q) {
+                $q->where('en_liquidacion', 1);
+            })->get();
+    }
+
     public function searchPaginationByColumn($column,$data,$cant,array $querys){
         $query = Producto::query();
         $query->where('estadoProductoWeb','<>','DESCONTINUADO');
@@ -218,7 +259,7 @@ class ProductoRepository implements ProductoRepositoryInterface
 
     public function searchCarrouselByColumn($column, $data) {
         $this->validateColumns($column);
-        return Producto::conHistorialRegistro()->where('estadoProductoWeb','<>','DESCONTINUADO')->where($column, 'LIKE', '%' . $data . '%')->get();
+        return Producto::with('DetalleProducto')->conHistorialRegistro()->where('estadoProductoWeb','<>','DESCONTINUADO')->where($column, 'LIKE', '%' . $data . '%')->get();
     }
 
     public function getLatestCarrouselProducts($limit = 15) {

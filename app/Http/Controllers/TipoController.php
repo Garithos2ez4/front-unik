@@ -31,11 +31,24 @@ class TipoController extends Controller
         
         //Variables propias del controlador
         $slugTipo = TipoProducto::select('idTipoProducto')->where('slugTipo','=',$slug)->first();
-        
-        $grupos = DB::select('CALL sp_get_grupoxtipo(?)', [$slugTipo->idTipoProducto]);
+
+        if (!$slugTipo) {
+            abort(404);
+        }
+
+        $grupos = GrupoProducto::where('idTipoProducto', $slugTipo->idTipoProducto)->get();
         $tipo = TipoProducto::firstWhere('idTipoProducto', $slugTipo->idTipoProducto);
-        $getProductos = DB::select('CALL sp_get_productoxgrupoxtipo(?,?)', [$slugTipo->idTipoProducto,$this->getIdGroup($grup)]);
-        $modelProductos = Producto::hydrate($getProductos);
+        
+        $idGrupoReq = $this->getIdGroup($grup);
+        $queryProductos = Producto::whereHas('GrupoProducto', function($q) use ($slugTipo) {
+            $q->where('idTipoProducto', $slugTipo->idTipoProducto);
+        });
+        
+        if ($idGrupoReq != -1) {
+            $queryProductos->where('idGrupo', $idGrupoReq);
+        }
+        
+        $modelProductos = $queryProductos->get();
         $selectgroup = '';
         
         

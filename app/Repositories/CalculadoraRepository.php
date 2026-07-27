@@ -21,7 +21,7 @@ class CalculadoraRepository implements CalculadoraRepositoryInterface
 
     //Metodo first() Consulta a la base de datos y retorna el primer registro o objeto eloquent  de la tabla o devuelve el primer resultado de la consulta
     public function get(){
-        return Calculadora::first();
+        return Calculadora::find(1);
     }
 
     //Consulta dinamica

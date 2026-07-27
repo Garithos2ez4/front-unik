@@ -13,6 +13,8 @@ interface ProductoServiceInterface
     public function getAjaxListaProductos(Request $request,Empresa $empresa,LengthAwarePaginator $productos);
     public function getFiltros($column,$data);
     public function searchFiltros($column,$data);
+    public function getLiquidacionProductsFilter($cantidad, Request $request);
+    public function getLiquidacionFiltros();
     public function getProductsFilter($column,$data,$cantidad,Request $request);
     public function searchProductsFilter($column,$data,$cantidad,Request $request);
     public function searchProductsMulti($data,$cantidad,Request $request);

@@ -65,6 +65,20 @@ class ProductoService implements ProductoServiceInterface
         return $filtros;
     }
 
+    public function getLiquidacionProductsFilter($cantidad, Request $request){
+        $consultas = array();
+        if($request->query('filtro')){
+            $consultas = $request->query('filtro');
+        }
+        return $this->productoRepository->getLiquidacionProductsPagination($cantidad, $consultas);
+    }
+    
+    public function getLiquidacionFiltros() { 
+        $productos = $this->productoRepository->getLiquidacionProducts();
+        $filtros = $this->getParametros($productos);
+        return $filtros;
+    }
+
     public function getProductsFilter($column,$data,$cantidad,Request $request){
         $consultas = array();
         if($request->query('filtro')){

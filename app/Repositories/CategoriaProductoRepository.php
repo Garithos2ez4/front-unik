@@ -14,7 +14,15 @@ class CategoriaProductoRepository implements CategoriaProductoRepositoryInterfac
         $this->modelColumns = (new CategoriaProducto())->getFillable();
     }
     public function getAll(){
-        return CategoriaProducto::all();
+        return CategoriaProducto::with(['GrupoProducto' => function ($query) {
+            // Cargar solo grupos que tengan productos que NO esten descontinuados
+            $query->whereHas('Producto', function($q){
+                $q->where('estadoProductoWeb', '<>', 'DESCONTINUADO');
+            });
+        }])->whereHas('GrupoProducto.Producto', function($q) {
+            // Traer solo categorias que tengan al menos un producto valido
+            $q->where('estadoProductoWeb', '<>', 'DESCONTINUADO');
+        })->get();
     }
     public function getOne($column,$data){
         $this->validateColumns($column);

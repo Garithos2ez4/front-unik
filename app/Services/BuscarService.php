@@ -17,26 +17,38 @@ class BuscarService implements BuscarServiceInterface
     }
 
     public function searchProducts($query){
-        $productos = $this->productoRepository->searchCarrouselByColumn('nombreProducto',$query)
+        $mapFunction = function ($producto) {
+            $detalle = $producto->DetalleProducto ?? \App\Models\DetalleProducto::where('idProducto', $producto->idProducto)->first();
+            $mostrarPrecio = $detalle ? (bool)$detalle->mostrarPrecioWeb : true;
+
+            $producto->mostrarPrecioWeb = $mostrarPrecio;
+            if (!$mostrarPrecio) {
+                $producto->precioTotalDolar = "0";
+                $producto->precioTotalSol = "0";
+            } else {
+                $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
+                $producto->precioTotalSol = $producto->precioTotalSol($this->preciosService);
+            }
+            $producto->imageUrls = $producto->publicImages();
+            return $producto;
+        };
+
+        $productos = $this->productoRepository->searchCarrouselByColumn('nombreProducto', $query)
                                                 ->take(6)
-                                                ->map(function ($producto) {
-                                                    // Agregar las URLs de las imgenes al producto
-                                                    $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
-                                                    $producto->precioTotalSol = $producto->precioTotalSol($this->preciosService);
-                                                    $producto->imageUrls = $producto->publicImages();
-                                                    return $producto;
-                                                });
-        if($productos->isEmpty()){
-            $productos = $this->productoRepository->searchCarrouselByColumn('modelo',$query)
+                                                ->map($mapFunction);
+
+        if ($productos->isEmpty()) {
+            $productos = $this->productoRepository->searchCarrouselByColumn('modelo', $query)
                                                     ->take(6)
-                                                    ->map(function ($producto) {
-                                                        // Agregar las URLs de las imgenes al producto
-                                                        $producto->precioTotalDolar = $producto->precioTotalDolar($this->preciosService);
-                                                        $producto->precioTotalSol = $producto->precioTotalSol($this->preciosService);
-                                                        $producto->imageUrls = $producto->publicImages();
-                                                        return $producto;
-                                                    });
+                                                    ->map($mapFunction);
         }
+
+        if ($productos->isEmpty()) {
+            $productos = $this->productoRepository->searchCarrouselByColumn('partNumber', $query)
+                                                    ->take(6)
+                                                    ->map($mapFunction);
+        }
+
         return $productos;
     }
 }

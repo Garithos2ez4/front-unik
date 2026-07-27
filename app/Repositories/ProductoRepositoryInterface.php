@@ -11,6 +11,8 @@ interface ProductoRepositoryInterface {
     public function getLatestProductsPagination($limit, array $querys);
     public function searchPaginationByColumn($column,$data,$cant,array $querys);
     public function searchPaginationMultiColumn($data,$cant,array $querys);
+    public function getLiquidacionProductsPagination($cant, array $querys);
+    public function getLiquidacionProducts();
     public function getLatestProducts($limit = 15);
     public function getAllByCategoria($idCategoria);
     public function getCarrouselAllByColumn($column, $data);
