@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="En {{$empresa->nombreComercial}}, ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.">
+    <meta name="description" content="En {{$empresa->nombreComercial}}, ofrecemos una amplia gama de productos tecnológiicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.">
     <title>@yield('title', $empresa->nombreComercial)</title>
     <meta property="og:title" content="@yield('og_title', $empresa->nombreComercial)">
     <meta property="og:description" content="En {{$empresa->nombreComercial}}, ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.">
@@ -20,31 +20,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ route('css.dynamic-styles') }}">
-    <script src="{{ route('js.header-scripts') }}"></script>
+    <script src="{{ asset('js/header-scripts.js') }}?v=1.02"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @if($empresa->fondo)
-    <style>
-        body, html {
-            background-color: transparent !important;
-        }
-        .wrapper, .content, #loader {
-            background-color: transparent !important;
-        }
-    </style>
-    @endif
 </head>
 
 <body>
-    @if($empresa->fondo)
-        <img src="{{ env('BACKEND_URL', 'http://127.0.0.1:8000') }}/storage/{{ $empresa->fondo }}" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -9999; pointer-events: none;" alt="fondo">
-    @endif
     <div id="loader">
         <div class="spinner-border text-empresa-uno" style="width: 3rem; height: 3rem;" role="status">
         </div>
     </div>
     <div class="wrapper">
         <header class="mb-2">
-            <form action="{{ route('buscar') }}" method="GET">
                 <div class="container ">
                     <div class="row align-items-center">
                         <div class="col-4 text-start d-block d-md-none ">
@@ -55,20 +41,57 @@
                         <div class="col-8 col-md-2 text-end">
                             <a href="{{$empresa->linkPaginaWeb}}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100"></a>
                         </div>
-                        <div class="col-12 col-md-9 align-middle">
-                            <div class="input-group align-middle">
-                                <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></button></i></div>
+                        <div class="col-12 col-md-7 align-middle">
+                            <form action="{{ route('buscar') }}" method="GET" class="input-group align-middle">
+                                <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></i></button></div>
                                 <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
                                 <ul class="list-group" id="suggestions" style="position:absolute;top: 100%; left: 0; width: 100%;z-index:1100"></ul>
-                            </div>
+                            </form>
                         </div>
                         <div class="col-md-1 text-center d-none d-md-block">
                             <h6>{{$tipoCambio}}</h6>
                             <h6>PEN</h6>
                         </div>
+                        <div class="col-md-1 text-center d-none d-md-block">
+                            <a href="{{ route('cart.index') }}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">
+                                <span class="position-relative d-inline-block">
+                                    <i class="bi bi-cart3" style="font-size: 1.8rem"></i>
+                                    @php $cartCount = count(session('cart', [])); @endphp
+                                    @if($cartCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                            {{ $cartCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                                <small class="d-block" style="font-size:0.65rem">Carrito</small>
+                            </a>
+                        </div>
+                        <div class="col-md-1 text-center d-none d-md-block">
+                            @if(Auth::guard('cliente')->check())
+                                <div class="dropdown">
+                                    <a class="text-decoration-none" style="color:{{$empresa->colorUno}}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle" style="font-size: 1.8rem"></i>
+                                        <small class="d-block" style="font-size:0.65rem">{{ Auth::guard('cliente')->user()->cliente->nombre }}</small>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                        <li><h6 class="dropdown-header">Mi Cuenta</h6></li>
+                                        <li>
+                                            <form action="{{ route('cliente.logout') }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesion</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            @else
+                                <a href="{{ route('cliente.login.form') }}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">
+                                    <i class="bi bi-person" style="font-size: 1.8rem"></i>
+                                    <small class="d-block" style="font-size:0.65rem">Ingresar</small>
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </form>
         </header>
         <nav>
             <div class="offcanvas offcanvas-start w-75" tabindex="-1" id="offcanvasnav" aria-labelledby="offcanvasnav1">
@@ -79,7 +102,7 @@
                 <div class="offcanvas-body" style="background-color:{{$empresa->colorTres}}">
                     <div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{ url('/') }}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Inicio</a></li>
+                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{$empresa->linkPaginaWeb}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Inicio</a></li>
                             <li class="list-group-item" style="background-color:{{$empresa->colorTres}}">
                                 <a class="text-decoration-none fw-bold" style="color:{{$empresa->colorUno}}" data-bs-toggle="collapse" href="#collapseCategoryOffCanva" role="button" aria-expanded="false" aria-controls="collapseCategoryOffCanva">Categorias</a>
                                 <div class="row">
@@ -100,6 +123,9 @@
                             <li class="list-group-item " style="background-color:{{$empresa->colorTres}}">
                                 <a class="fw-bold" style="color:{{$empresa->colorDos}}" href="{{route('ofertas')}}">Ofertas</a>
                             </li>
+                            <li class="list-group-item " style="background-color:{{$empresa->colorTres}}">
+                                <a class="fw-bold" style="color:{{$empresa->colorDos}}" href="{{route('liquidacion')}}">Liquidación</a>
+                            </li>
                             <li class="list-group-item" style="background-color:{{$empresa->colorTres}}">
                                 <a class="text-decoration-none fw-bold" style="color:{{$empresa->colorUno}}" data-bs-toggle="collapse" href="#collapseMarcasOffCanva" role="button" aria-expanded="false" aria-controls="collapseMarcasOffCanva">Marcas</a>
                                 <div class="row">
@@ -118,6 +144,7 @@
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('mediodepago')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Medios de pago</a></li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('envios')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Envios</a></li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('reviews')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Reviews & Comunidad</a></li>
+
                         </ul>
                     </div>
 
@@ -126,7 +153,7 @@
         </nav>
         <nav class="navbar navbar-expand-lg navbar-dark fs-5 fw-bold justify-content-center d-none d-sm-block" style="background-color:{{$empresa->colorUno}}">
             <div class="container-md">
-                <a href="{{ url('/') }}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100"></a>
+                <a class="navbar-brand" href="{{$empresa->linkPaginaWeb}}">Inicio</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -141,7 +168,7 @@
                                 @foreach($categorias as $categoria)
                                 <li style="position:relative" onmouseover="mostrarCategories({{$categoria->idCategoria}})" onmouseout="verificarMouseCategories({{$categoria->idCategoria}})">
                                     <a class="dropdown-item" href="#">{{ $categoria->nombreCategoria }}</a>
-                                    <div style="position:absolute;top:0;left:100%;display:none" id="div-categories-{{$categoria->idCategoria}}">
+                                    <div class="nav-submenu-container" id="div-categories-{{$categoria->idCategoria}}">
                                         <ul class="list-group">
                                             @foreach($categoria->GrupoProducto as $grupito)
                                             <li class="list-group-item ps-0 pe-0 pt-0 pb-0"><a class="dropdown-item" href="{{route('categoria', [$categoria->slugCategoria, $grupito->slugGrupo])}}">{{ $grupito->nombreGrupo }}</a></li>
@@ -156,13 +183,16 @@
                             <a class="nav-link text-decoration-underline" style="color:{{$empresa->colorDos}}" href="{{route('ofertas')}}">Ofertas</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="nav-link text-decoration-underline" style="color:{{$empresa->colorDos}}" href="{{route('liquidacion')}}">Liquidación</a>
+                        </li>
+                        <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#multiCollapseMarcas" role="button" aria-expanded="false" aria-controls="multiCollapseMarcas">Marcas</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                             <a class="nav-link" href="{{route('mediodepago')}}">Medios de pago</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="nav-link" href="{{route('envios')}}">Envíos</a>
+                            <a class="nav-link" href="{{route('envios')}}">Envios</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                             <a class="nav-link" href="{{route('reviews')}}">Reviews & Comunidad</a>
@@ -199,12 +229,11 @@
         <main class="content">
             @yield('content')
             @php
-                $productoService = app('App\Services\ProductoServiceInterface');
+            $productoService = app('App\Services\ProductoServiceInterface');
             @endphp
-            <x-carrusel_marcas :marcas="$marcas->shuffle()"/>
+            <x-carrusel_marcas :marcas="$marcas->shuffle()" />
             <br>
         </main>
-
         <footer class="text-white mt-auto" style="background-color:{{$empresa->colorUno}}">
             <div class="container">
                 <br>

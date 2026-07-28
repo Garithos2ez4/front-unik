@@ -107,10 +107,13 @@
 
         <div class="col-12 col-md-6 pt-4">
             <h6 style="color:{{$empresa->colorUno}};opacity:0.5">{{$producto->GrupoProducto->nombreGrupo}}</h6>
-            <h2 style="color:{{$empresa->colorUno}}">{{$producto->nombreProducto}}</h2>
+            <h1 style="color:{{$empresa->colorUno}}; font-size: 1.5rem;">{{$producto->nombreProducto}}</h1>
             <h6 class="{{$producto->estadoColor()}}">{{$producto->estadoProductoWeb}}</h6>
-            <h3 style="color:{{$empresa->colorDos}}">{{$producto->precioTotalDolar($preciosService) < 1 ? 'Consultar precio por WhatsApp':'S/.PEN '.$producto->precioTotalSol($preciosService)}}</h3>
-            <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{$producto->precioTotalSol($preciosService) < 1 ? '':'$USD '.$producto->precioTotalDolar($preciosService)}} </h5>
+            @php
+            $mostrarPrecio = optional($producto->DetalleProducto)->mostrarPrecioWeb ?? true;
+            @endphp
+            <h3 style="color:{{$empresa->colorDos}}">{{($producto->precioTotalDolar($preciosService) < 1 || !$mostrarPrecio) ? 'Consultar precio por WhatsApp':'S/.PEN '.$producto->precioTotalSol($preciosService)}}</h3>
+            <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{($producto->precioTotalSol($preciosService) < 1 || !$mostrarPrecio || !$producto->usar_tc_fijo) ? '':'$USD '.$producto->precioTotalDolar($preciosService) }} </h5>
             <p class="mb-0"><i class="bi bi-shield-check"></i> Garant&iacute;a de {{$producto->garantia}}.</p>
             <p class="mb-0"><i class='bx bxs-truck'></i> Preguntar por envio y disponibilidad.</p>
             <br>
@@ -118,9 +121,15 @@
             <p class="mb-0"><strong>Modelo:</strong> {{$producto->modelo}}</p>
             <p class="mb-0"><strong>P/N:</strong> {{$producto->partNumber}}</p>
             <br>
-            <div class="col-12 col-md-6">
-                <div class="d-grid gap-2">
+            <div class="col-12 col-md-10 mt-2">
+                <div class="d-grid gap-2 d-md-flex">
                     <a class="btn btn-success" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer" role="button"><i class="bi bi-whatsapp"></i> Comprar via whatsapp</a>
+
+                    @if($producto->precioTotalSol($preciosService) > 0 && (!$producto->DetalleProducto || $producto->DetalleProducto->mostrarPrecioWeb) && $mostrarPrecio)
+                    {{--<button class="btn btn-outline-dark add-to-cart-btn" data-id="{{ $producto->idProducto }}">
+                    <i class="bi bi-cart-plus"></i> Añadir al carrito
+                    </button>--}}
+                    @endif
                 </div>
             </div>
             <div class="col-6">
@@ -128,6 +137,7 @@
         </div>
     </div>
     <br>
+
     <div class="col-12 d-block border-bottom border-top pt-3 d-sm-none mb-2">
         <a class="text-decoration-none text-empresa-uno fs-5 fw-bolder w-100 d-inline-flex" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottomDesc" aria-controls="offcanvasBottomDesc">
             <p class="w-75"> Informaci&oacute;n adicional</p>
@@ -248,22 +258,5 @@
     </div>
     <br>
 </div>
-<script>
-    const carousel = document.querySelector('#carouselExampleIndicators');
-
-    carousel.addEventListener('slid.bs.carousel', function() {
-        const iframes = document.querySelectorAll('.yt-frame');
-        iframes.forEach(iframe => {
-            const src = iframe.getAttribute('src').split('?')[0];
-            iframe.setAttribute('src', src); // Detener video
-        });
-
-        // Reproducir solo el iframe visible
-        const active = carousel.querySelector('.carousel-item.active iframe');
-        if (active) {
-            const base = active.getAttribute('src').split('?')[0];
-            active.setAttribute('src', base + '?autoplay=1&rel=0');
-        }
-    });
-</script>
+<script src="{{ asset('js/producto.js') }}"></script>
 @endsection

@@ -38,7 +38,7 @@ class ProductoController extends Controller
 
         $productosCategoria = $this->productoService->getProductosByCategoria($producto->GrupoProducto->idCategoria,17);
 
-        return view('producto',[
+        return view('producto.producto',[
                     'categorias' => $categorias,
                     'empresa' => $empresa,
                     'marcas' => $marcas,

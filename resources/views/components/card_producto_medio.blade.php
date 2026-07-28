@@ -1,14 +1,23 @@
+@props([
+    'storage' => null,
+    'colsmall' => 6,
+    'colmedio' => 3,
+    'empres' => null,
+    'cantCards' => 16,
+    'filtros' => null,
+    'dolar' => null,
+])
 <div class="card_producto_medio">
   <div class="row">
     <div class="col-md-2">
-      <x-partials.filtro-productos :filtros="$filtros" :colmedio="$colmedio" :empres="$empres" :totalProducts="$storage->total()" :colsmall="$colsmall"/>
+      <x-partials.filtro-productos :filtros="$filtros" :colmedio="$colmedio" :empres="$empres" :totalProducts="$storage ? (method_exists($storage, 'total') ? $storage->total() : $storage->count()) : 0" :colsmall="$colsmall"/>
     </div>
     <div class="col-md-10">
       <div class="container" style="position: relative">
-        @if($storage->total() < 1)
+        @if(!$storage || (method_exists($storage, 'total') ? $storage->total() : $storage->count()) < 1)
         <div class="row d-none d-sm-block">
           <div class="col-6 col-md-3 ">
-              <h6 class=" pt-4 fw-light" id="recountMedio">{{$storage->total()}} productos encontrados</h6>
+              <h6 class=" pt-4 fw-light" id="recountMedio">{{$storage ? (method_exists($storage, 'total') ? $storage->total() : $storage->count()) : 0}} productos encontrados</h6>
           </div>
         </div>
         <div class="row" style="height:20vh">
@@ -38,8 +47,8 @@
     function loadProducts(url) {
         let loader = document.getElementById('loader-list-products');
         const params = new URLSearchParams({
-            colmedio: {{$colmedio}},
-            colsmall: {{$colsmall}}
+            colmedio: {{$colmedio ?? 3}},
+            colsmall: {{$colsmall ?? 6}}
         });
         const fullUrl = `${url}&${params.toString()}`;
         loader.style.display = 'flex';

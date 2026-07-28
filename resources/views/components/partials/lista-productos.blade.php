@@ -1,8 +1,9 @@
 <div class="row">
     <div class="col-6 col-md-3 d-none d-sm-block">
-        <h6 class=" pt-4 fw-light" id="recountMedio">{{$productos->total()}} productos encontrados</h6>
+        <h6 class=" pt-4 fw-light" id="recountMedio">{{method_exists($productos, 'total') ? $productos->total() : $productos->count()}} productos encontrados</h6>
     </div>
-    <div class="col-12 col-md-9 d-flex justify-content-center justify-content-md-end align-items-center pt-2 {{$productos->lastPage() < 2 ? 'd-none' : ''}}">
+    <div class="col-12 col-md-9 d-flex justify-content-center justify-content-md-end align-items-center pt-2 {{ (!method_exists($productos, 'lastPage') || $productos->lastPage() < 2) ? 'd-none' : ''}}">
+        @if(method_exists($productos, 'lastPage'))
             <ul class="pagination custom-pagination mt-2" id="pagination">
               <li class="page-item">
                     <a id="page-item-previus" href="{{$productos->previousPageUrl() == null ? 'javascript:void(0)' : $productos->previousPageUrl()}}" class="page-link bg-empresa-tres text-empresa-uno" style="cursor:pointer" aria-label="Previous">
@@ -21,6 +22,7 @@
                 </a>
               </li>
             </ul>
+        @endif
     </div>
 </div>
 <div class="row">
@@ -48,8 +50,8 @@
                         <div class="col-md-12 text-start">
                             <p class="mb-0 fs-card-text truncar-one-lineas">
                                 <strong style="color:{{ $empres->colorDos }}">Precio:</strong>
-                                <span class="precio-card">{{ $producto->precioTotalSol($preciosService) < 1 ? 'Consultar' : 'S/.'.$producto->precioTotalSol($preciosService) }}</span>
-                                <span class="fw-lighter">{{ $producto->precioTotalDolar($preciosService) < 1 ? '' : '($'.$producto->precioTotalDolar($preciosService).')' }}</span>
+                                <span class="precio-card">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalSol($preciosService) < 1 ? 'Consultar' : 'S/.'.$producto->precioTotalSol($preciosService) }}</span>
+                                <span class="fw-lighter">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalDolar($preciosService) < 1 || !$producto->usar_tc_fijo ? '' : '($'.$producto->precioTotalDolar($preciosService).')' }}</span>
                             </p>
                             <p class="mt-0 mb-0 fs-card-text"><strong style="color:{{ $empres->colorDos }}">Garantia:</strong> {{ $producto->garantia }}</p>
                         </div>

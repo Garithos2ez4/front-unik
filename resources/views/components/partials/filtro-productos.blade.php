@@ -1,3 +1,17 @@
+@props([
+    'filtros' => null,
+    'colmedio' => 3,
+    'empres' => null,
+    'totalProducts' => 0,
+    'colsmall' => 6,
+])
+@php
+    $filtros = $filtros ?? [];
+    $filtros['disponibilidad'] = $filtros['disponibilidad'] ?? [];
+    $filtros['marcas'] = $filtros['marcas'] ?? [];
+    $filtros['grupos'] = $filtros['grupos'] ?? [];
+    $filtros['caracteristicas'] = $filtros['caracteristicas'] ?? [];
+@endphp
 <form action="{{ url()->current() }}" method="GET" id="form-filtro-products">
     <div class="container pe-0 ms-0 me-0 d-none d-sm-block">
         <div class="row ps-0">

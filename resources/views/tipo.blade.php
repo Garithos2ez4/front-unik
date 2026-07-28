@@ -15,7 +15,7 @@
         <div id="carruselGrupos" class="carousel slide d-none d-sm-block" data-bs-ride="carousel" data-bs-interval="false" style="height:20vh">
         <div class="carousel-inner">
           @php
-            $chunks = array_chunk($grupos,5);
+            $chunks = collect($grupos)->chunk(5);
           @endphp
           @foreach ($chunks as $index => $chunk)
             <div class="carousel-item {{ $index == 0 ? 'active' : '' }}  text-center">
@@ -50,7 +50,7 @@
       <div id="carruselGruposSmart" class="carousel slide d-block d-md-none" data-bs-ride="carousel" data-bs-interval="false"  style="height:10vh">
         <div class="carousel-inner">
           @php
-            $chunks = array_chunk($grupos,3);
+            $chunks = collect($grupos)->chunk(3);
           @endphp
           @foreach ($chunks as $index => $chunk)
             <div class="carousel-item {{ $index == 0 ? 'active' : '' }}  text-center">
@@ -100,7 +100,7 @@
             <x-filtro_medio :pagina="'tipo'" :parametrosFillMedio="$parametrosFiltro" :totalProductsMedio="count($productos)"/>
         </div>
         <div class="col-md-10 d-none d-md-flex" id="reload_filtro" >
-            <x-card_producto_medio :storage="$productos" :colsmall="6" :colmedio="3" :empres="$empresa" :dolar="$tipoCambio" :cantCards="16"  />
+            <x-card_producto_medio :storage="$productos" :colsmall="6" :colmedio="3" :empres="$empresa" :dolar="$tipoCambio" :cantCards="16" :filtros="$filtros ?? null" />
         </div>
         <div class="col-12 d-block d-sm-none sticky-div" id="stickyDiv">
             <x-filtro_small :empresaFillSmall="$empresa" :pagina="'tipo'" :parametrosFillSmall="$parametrosFiltro" :totalProductsSmall="count($productos)" :paginaFillSmall="'tipo'"/>
