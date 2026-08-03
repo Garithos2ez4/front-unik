@@ -33,7 +33,7 @@ class OfertasController extends Controller
         //Variables propias del controlador
         $productos = $this->productoService->getProductsFilter('estadoProductoWeb','OFERTA',24,$request);
         //Lista de productos paginados
-        if($request->query('page') || $request->query('filtro')){
+        if($request->ajax()){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
         }

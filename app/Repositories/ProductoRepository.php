@@ -107,8 +107,9 @@ class ProductoRepository implements ProductoRepositoryInterface
     public function getLiquidacionProductsPagination($cant, array $querys){
         $query = Producto::query();
         $query->where('estadoProductoWeb','<>','DESCONTINUADO');
-        $query->whereHas('DetalleProducto', function($q) {
-            $q->where('en_liquidacion', 1);
+        $query->where(function($q) {
+            $q->where('estadoProductoWeb', 'LIQUIDACION')
+              ->orWhereHas('liquidacion');
         });
         
         if($querys){
@@ -138,8 +139,9 @@ class ProductoRepository implements ProductoRepositoryInterface
 
     public function getLiquidacionProducts(){
         return Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
-            ->whereHas('DetalleProducto', function($q) {
-                $q->where('en_liquidacion', 1);
+            ->where(function($q) {
+                $q->where('estadoProductoWeb', 'LIQUIDACION')
+                  ->orWhereHas('liquidacion');
             })->get();
     }
 

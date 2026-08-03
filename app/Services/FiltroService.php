@@ -12,14 +12,15 @@ class FiltroService
     {
         // Aquí, puedes usar la lógica que desees para extraer los filtros
         $disponibilidad = $productos->unique('estadoProductoWeb')->pluck('estadoProductoWeb');
-        $marcas = $productos->load('MarcaProducto')->pluck('MarcaProducto')->unique('idMarca'); 
+        $marcas = $productos->load('MarcaProducto')->pluck('MarcaProducto')->unique('idMarca');
         $grupos = $productos->load('GrupoProducto')->pluck('GrupoProducto')->unique('idGrupoProducto');
-        $precios = $productos->map(function ($producto) {
-            return floatval(str_replace(',', '', $producto->precioTotalSol()));
+        $preciosService = app(\App\Services\PreciosServiceInterface::class);
+        $precios = $productos->map(function ($producto) use ($preciosService) {
+            return floatval(str_replace(',', '', $producto->precioTotalSol($preciosService)));
         });
         $precioMax = $precios->max();
         $precioMin = $precios->min();
-        
+
         // Agrupar las características de los productos
         $especificaciones = $productos->load('Caracteristicas_Producto.Caracteristicas')
             ->pluck('Caracteristicas_Producto.*')
@@ -28,7 +29,7 @@ class FiltroService
 
         $caracteristicas = $especificaciones->groupBy('Caracteristicas.idCaracteristica')
             ->sortBy(function ($spect) {
-                return $spect->first()->Caracteristicas->idCaracteristica; 
+                return $spect->first()->Caracteristicas->idCaracteristica;
             })->map(function ($group) {
                 $idCaracteristica = $group->first()->Caracteristicas->idCaracteristica;
                 $nombreCaracteristica = $group->first()->Caracteristicas->especificacion;

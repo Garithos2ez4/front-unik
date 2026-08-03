@@ -40,7 +40,7 @@ class MarcaController extends Controller
         $productos = $this->productoService->getProductsFilter('idMarca',$marca->idMarca,24,$request);
 
         //Lista de productos paginados
-        if($request->query('page') || $request->query('filtro')){
+        if($request->ajax()){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
         }

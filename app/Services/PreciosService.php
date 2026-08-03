@@ -69,8 +69,8 @@ class PreciosService implements PreciosServiceInterface
 
     public function getPrecioTotal($precio,$grupo,$tipo,$estado,$ganancia,$producto){
         // Si el producto está en liquidación, anula los cálculos regulares y usa el precio final en Soles
-        if ($producto->DetalleProducto && $producto->DetalleProducto->en_liquidacion && $producto->DetalleProducto->precio_liquidacion > 0) {
-            $precioLiqSoles = $producto->DetalleProducto->precio_liquidacion;
+        if ($producto->liquidacion && $producto->liquidacion->precio_liquidacion > 0) {
+            $precioLiqSoles = $producto->liquidacion->precio_liquidacion;
             
             if ($tipo == 'SOL') {
                 return $precioLiqSoles;
@@ -86,6 +86,14 @@ class PreciosService implements PreciosServiceInterface
         return $total;
     }
 
+    public function getPrecioTotalNormal($precio,$grupo,$tipo,$ganancia,$producto){
+        $empresa = $this->headerService->obtenerEmpresa();
+        $gananciaValidate = $this->validateMoney($ganancia,$tipo,$producto);
+        // Usar SIEMPRE NORMAL para que no aplique el descuento especial de OFERTA ni LIQUIDACION
+        $total = $this->getPrecioCalculado($precio,$grupo,$tipo,'NORMAL',$producto) * $this->porcent($empresa->comision) + $gananciaValidate;
+        return $total;
+    }
+
     private function getTipoCambioPorProducto($producto)
     {
         // Si el producto tiene un tipo de cambio personalizado, usarlo prioritariamente
@@ -93,9 +101,9 @@ class PreciosService implements PreciosServiceInterface
             return $producto->tc_fijo;
         }
 
-        // $producto->usar_tc_fijo == 0 significa "Usar Tipo de Cambio Sunat" APAGADO (usar FIJO GLOBAL)
-        // $producto->usar_tc_fijo == 1 significa "Usar Tipo de Cambio Sunat" ENCENDIDO (usar SUNAT)
-        if(!$producto->usar_tc_fijo){
+        // Si el checkbox "Usar Tipo de Cambio Fijo" está marcado (1) -> usar FIJO GLOBAL
+        // Si está desmarcado (0) -> usar SUNAT
+        if($producto->usar_tc_fijo){
             return Calculadora::find(2)->tasaCambio; // FIJO
         }
 

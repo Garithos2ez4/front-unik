@@ -46,7 +46,7 @@ class BuscarController extends Controller
         $productos = $this->productoService->searchProductsMulti(session()->get('buscar', $obt), 32, $request);
 
 
-        if($request->query('page') || $request->query('filtro')){
+        if($request->ajax()){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
         }

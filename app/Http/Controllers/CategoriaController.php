@@ -39,7 +39,7 @@ class CategoriaController extends Controller
 
         $productos = $this->productoService->getProductsFilter('idGrupo',$grupo->idGrupoProducto,24,$request);
         //Lista de productos paginados
-        if($request->query('page') || $request->query('filtro')){
+        if($request->ajax()){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
         }

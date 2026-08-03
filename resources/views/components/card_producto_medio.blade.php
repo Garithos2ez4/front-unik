@@ -56,7 +56,11 @@
           x.disabled = true;
         });
 
-        fetch(fullUrl)
+        fetch(fullUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -66,7 +70,12 @@
             .then(data => {
                 document.querySelector('.page-content').innerHTML = data.html;
                 document.getElementById('recount').textContent = data.paginas;
+                
+                // Hide local loader and sidebar overlay
                 loader.style.display = 'none';
+                const overlay = document.getElementById('filtro-loading-overlay');
+                if (overlay) overlay.style.display = 'none';
+                
                 buttonsFilter.forEach(function(x){
                   x.disabled = false;
                 });
@@ -87,13 +96,22 @@
             });
 
             link.addEventListener('click', function(event) {
-              const form = document.getElementById('form-filtro-products');
-              const formData = new FormData(form);
-              const params = new URLSearchParams(formData).toString();
                 event.preventDefault();
                 
-                const url = this.getAttribute('href')+`&${params}`;
+                const form = document.getElementById('form-filtro-products');
+                let params = '';
+                if (form) {
+                    const formData = new FormData(form);
+                    params = new URLSearchParams(formData).toString();
+                }
+                
+                let url = this.getAttribute('href');
+                if (params) {
+                    url += url.includes('?') ? `&${params}` : `?${params}`;
+                }
+                
                 if (url !== 'javascript:void(0)') {
+                    window.history.pushState({path: url}, '', url);
                     loadProducts(url);
                 }
             });
@@ -108,8 +126,15 @@
         const baseUrl = form.action;
         const fullUrl = `${baseUrl}?${params}`;
 
+        window.history.pushState({path: fullUrl}, '', fullUrl);
         loadProducts(fullUrl);
     }
+
+    // Manejar el botón de retroceso/adelante del navegador
+    window.addEventListener('popstate', function(event) {
+        const url = location.href;
+        loadProducts(url);
+    });
 
     buttonsFilter.forEach(function(x){
       x.addEventListener('change',filterSubmit);

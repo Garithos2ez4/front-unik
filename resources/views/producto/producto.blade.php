@@ -111,9 +111,29 @@
             <h6 class="{{$producto->estadoColor()}}">{{$producto->estadoProductoWeb}}</h6>
             @php
             $mostrarPrecio = optional($producto->DetalleProducto)->mostrarPrecioWeb ?? true;
+            $precioSolStr = $producto->precioTotalSol($preciosService);
+            $precioSol = floatval(str_replace(',', '', $precioSolStr));
+            $precioSolNormalStr = $producto->precioNormalSol($preciosService);
+            $precioSolNormal = floatval(str_replace(',', '', $precioSolNormalStr));
+            $descuentoPorcentaje = 0;
+            if ($precioSolNormal > $precioSol && $precioSolNormal > 0) {
+                $descuentoPorcentaje = round((($precioSolNormal - $precioSol) / $precioSolNormal) * 100);
+            }
             @endphp
-            <h3 style="color:{{$empresa->colorDos}}">{{($producto->precioTotalDolar($preciosService) < 1 || !$mostrarPrecio) ? 'Consultar precio por WhatsApp':'S/.PEN '.$producto->precioTotalSol($preciosService)}}</h3>
-            <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{($producto->precioTotalSol($preciosService) < 1 || !$mostrarPrecio || !$producto->usar_tc_fijo) ? '':'$USD '.$producto->precioTotalDolar($preciosService) }} </h5>
+            @if(floatval(str_replace(',', '', $producto->precioTotalDolar($preciosService))) < 1 || !$mostrarPrecio)
+                <h3 style="color:{{$empresa->colorDos}}">Consultar precio por WhatsApp</h3>
+            @else
+                <h3 style="{{ $descuentoPorcentaje > 0 ? 'color: #dc3545;' : 'color:'.$empresa->colorDos }}">
+                    S/.PEN {{ $precioSolStr }}
+                    @if($descuentoPorcentaje > 0)
+                        <span class="badge bg-danger ms-2">-{{ $descuentoPorcentaje }}%</span>
+                    @endif
+                </h3>
+                @if($descuentoPorcentaje > 0)
+                    <h5 class="text-muted text-decoration-line-through">S/.PEN {{ $precioSolNormalStr }}</h5>
+                @endif
+            @endif
+            <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{(floatval(str_replace(',', '', $producto->precioTotalSol($preciosService))) < 1 || !$mostrarPrecio || !$producto->usar_tc_fijo) ? '':'$USD '.$producto->precioTotalDolar($preciosService) }} </h5>
             <p class="mb-0"><i class="bi bi-shield-check"></i> Garant&iacute;a de {{$producto->garantia}}.</p>
             <p class="mb-0"><i class='bx bxs-truck'></i> Preguntar por envio y disponibilidad.</p>
             <br>
@@ -212,7 +232,7 @@
             <div class="col-sm-6 col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0" style="background-color: rgba(255, 255, 255, 0.9);">
                     @if($review->imagen_setup)
-                    <img src="{{ $review->imagen_setup }}" class="card-img-top" alt="Setup de {{ $review->cliente->nombre ?? 'Cliente' }}" style="object-fit: cover; height: 200px;">
+                    <img src="{{ asset('storage/' . $review->imagen_setup) }}" class="card-img-top" alt="Setup de {{ $review->cliente->nombre ?? 'Cliente' }}" style="object-fit: cover; height: 200px;">
                     @endif
                     <div class="card-body">
                         <div class="mb-2">

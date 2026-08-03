@@ -32,6 +32,7 @@ class HomeController extends Controller
         $impresoras = $this->homeService->getProductsByImpresoras();
         $accesorios = $this->homeService->getAccesorios();
         $exclusivos = $this->homeService->getExclusivos();
+        $suministros = $this->homeService->getProductsBySuministros();
 
         return view('home',[
                     'categorias' => $categorias,
@@ -45,7 +46,8 @@ class HomeController extends Controller
                     'lapGamer' => $lapGamer,
                     'impresoras' => $impresoras,
                     'accesorios' => $accesorios,
-                    'exclusivos' => $exclusivos
+                    'exclusivos' => $exclusivos,
+                    'suministros' => $suministros
 ]);
     }
     //

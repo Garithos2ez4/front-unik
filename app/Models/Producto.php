@@ -131,6 +131,18 @@ class Producto extends Model
         return number_format(ceil($precio), 2, '.', ',');
     }
 
+    public function precioNormalDolar($preciosService)
+    {
+        $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->gananciaExtra, $this);
+        return number_format(ceil($precio), 2, '.', ',');
+    }
+
+    public function precioNormalSol($preciosService)
+    {
+        $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'SOL', $this->gananciaExtra, $this);
+        return number_format(ceil($precio), 2, '.', ',');
+    }
+
     public function publicImages()
     {
 
@@ -153,11 +165,11 @@ class Producto extends Model
             case 'DISPONIBLE':
                 return 'text-success';
             case 'OFERTA':
-                return 'text-warning'; // Naranja
+                return 'text-danger'; // Naranja
             case 'LIQUIDACION':
-                return 'text-danger'; // Rojo
+                return 'text-agotado'; // Rojo
             case 'AGOTADO':
-                return 'text-agotado text-decoration-line-through';
+                return 'text-warning text-decoration-line-through';
             case 'DESCONTINUADO':
                 return 'text-dark text-decoration-line-through';
             default:
@@ -205,5 +217,10 @@ class Producto extends Model
     public function DetalleProducto()
     {
         return $this->hasOne(DetalleProducto::class, 'idProducto', 'idProducto');
+    }
+
+    public function liquidacion()
+    {
+        return $this->hasOne(Liquidacion::class, 'idProducto', 'idProducto');
     }
 }

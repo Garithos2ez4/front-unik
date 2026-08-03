@@ -13,7 +13,9 @@
                 @foreach($banners->where('tipoPublicidad','BANNER') as $banner)
                 @if($contador == 0)
                 <div class="carousel-item active">
-                    <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100">
+                    <a href="{{ route('categoria', ['monitores', 'monitor-portatil']) }}">
+                        <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100">
+                    </a>
                 </div>
                 @php $contador++; @endphp
                 @else
@@ -73,6 +75,12 @@
     </div>
     <br>
     <div class="row">
+        <div class="col-12">
+            <x-slider_medio :producto="$suministros" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Suministros'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('categoria', ['suministros','suministros'])" />
+        </div>
+    </div>
+    <br>
+    <div class="row">
         <div class="col-12 col-md-9">
             <x-slider_medio :producto="$accesorios" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Accesorios'" :sizeCardMed="'25%'" :slideMedio="13" :slideSmall="8" :link="route('categoria', ['perifericos','mouses'])" />
         </div>
@@ -85,8 +93,13 @@
     <br>
 
     <div class="row">
-        <div class="col-12">
-            <x-slider_medio :producto="$lapGamer" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Laptops Gamer'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('categoria', ['laptops','laptop-gamer'])" />
+        <div class="col-12 col-md-9">
+            <x-slider_medio :producto="$lapGamer" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Laptops Gamer'" :sizeCardMed="'25%'" :slideMedio="5" :slideSmall="8" :link="route('categoria', ['laptops','laptop-gamer'])" />
+        </div>
+        <div class="col-12 col-md-3 d-flex justify-content-center align-items-end pb-2 ps-0">
+            <div class="text-center ps-2">
+                <img src="{{asset('storage/banner_laptops_gamer.png')}}" alt="Banner Laptops Gamer" class="rounded-3 border shadow img-vertical">
+            </div>
         </div>
     </div>
     <br>

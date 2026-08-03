@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ route('css.dynamic-styles') }}">
     <script src="{{ asset('js/header-scripts.js') }}?v=1.02"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @stack('styles')
 </head>
 
 <body>

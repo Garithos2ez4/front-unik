@@ -44,6 +44,11 @@ class ReviewsController extends Controller
 
     public function store(\Illuminate\Http\Request $request)
     {
+        // 0. Anti-bot honeypot check
+        if (!empty($request->input('website_hp'))) {
+            return redirect()->route('reviews')->with('success', '¡Gracias! Tu reseña ha sido enviada y está pendiente de aprobación.');
+        }
+
         $request->validate([
             'idTipoDocumento' => 'required|integer',
             'numeroDocumento' => 'required|string|max:15',
@@ -54,8 +59,30 @@ class ReviewsController extends Controller
             'idProducto' => 'nullable|integer',
             'calificacion' => 'required|integer|min:1|max:5',
             'comentario' => 'required|string|max:1000',
-            'imagen_setup' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'imagen_setup' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'captcha' => ['required', 'captcha'],  // ← mews/captcha validation
+        ], [
+            'captcha.required' => 'Por favor, completa la verificación de seguridad.',
+            'captcha.captcha'  => 'El código de verificación es incorrecto. Inténtalo de nuevo.',
         ]);
+
+        $tipoDoc = (int) $request->idTipoDocumento;
+        $numDoc = trim($request->numeroDocumento);
+
+        // Validaciones estrictas por tipo de documento
+        if ($tipoDoc === 1) { // DNI
+            if (!preg_match('/^[0-9]{8}$/', $numDoc)) {
+                return back()->withErrors(['numeroDocumento' => 'El DNI debe contener exactamente 8 dígitos numéricos.'])->withInput();
+            }
+        } elseif ($tipoDoc === 3) { // RUC
+            if (!preg_match('/^(10|15|17|20)[0-9]{9}$/', $numDoc)) {
+                return back()->withErrors(['numeroDocumento' => 'El RUC debe tener 11 dígitos numéricos y comenzar con 10, 15, 17 o 20.'])->withInput();
+            }
+        } elseif ($tipoDoc === 2) { // Carné de Extranjería
+            if (!preg_match('/^[A-Za-z0-9]{8,12}$/', $numDoc)) {
+                return back()->withErrors(['numeroDocumento' => 'El Carné de Extranjería debe tener entre 8 y 12 caracteres.'])->withInput();
+            }
+        }
 
         // Find or create the client
         $cliente = \App\Models\Cliente::where('numeroDocumento', $request->numeroDocumento)->first();
@@ -89,9 +116,15 @@ class ReviewsController extends Controller
         // Process the image if uploaded
         $imagenPath = null;
         if ($request->hasFile('imagen_setup')) {
-            $path = $request->file('imagen_setup')->store('public/reviews');
-            // Remove 'public/' to be accessible via storage helper
-            $imagenPath = str_replace('public/', '', $path);
+            $file = $request->file('imagen_setup');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            // Guardamos directo en el symlink público (apunta a logunk/storage/app/public)
+            $destDir = public_path('storage/reviews');
+            if (!file_exists($destDir)) {
+                mkdir($destDir, 0755, true);
+            }
+            $file->move($destDir, $filename);
+            $imagenPath = 'reviews/' . $filename;
         }
 
         // Create the review with estado = 0 (pending)

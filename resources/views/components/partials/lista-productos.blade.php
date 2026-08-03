@@ -48,11 +48,27 @@
                     </div>
                     <div class="row ">
                         <div class="col-md-12 text-start">
+                            @php
+                            $precioSolStrList = $producto->precioTotalSol($preciosService);
+                            $precioSolList = floatval(str_replace(',', '', $precioSolStrList));
+                            $precioSolNormalStrList = $producto->precioNormalSol($preciosService);
+                            $precioSolNormalList = floatval(str_replace(',', '', $precioSolNormalStrList));
+                            $descPorcList = 0;
+                            if ($precioSolNormalList > $precioSolList && $precioSolNormalList > 0) {
+                                $descPorcList = round((($precioSolNormalList - $precioSolList) / $precioSolNormalList) * 100);
+                            }
+                            @endphp
                             <p class="mb-0 fs-card-text truncar-one-lineas">
                                 <strong style="color:{{ $empres->colorDos }}">Precio:</strong>
-                                <span class="precio-card">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalSol($preciosService) < 1 ? 'Consultar' : 'S/.'.$producto->precioTotalSol($preciosService) }}</span>
+                                <span class="precio-card" style="{{ $descPorcList > 0 ? 'color: #dc3545;' : '' }}">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $precioSolList < 1 ? 'Consultar' : 'S/.'.$precioSolStrList }}</span>
                                 <span class="fw-lighter">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalDolar($preciosService) < 1 || !$producto->usar_tc_fijo ? '' : '($'.$producto->precioTotalDolar($preciosService).')' }}</span>
+                                @if($descPorcList > 0)
+                                    <span class="badge bg-danger ms-1" style="font-size: 0.65rem;">-{{ $descPorcList }}%</span>
+                                @endif
                             </p>
+                            @if($descPorcList > 0)
+                                <p class="mb-0 fs-card-text text-muted text-decoration-line-through" style="font-size: 0.75rem;">S/.{{ $precioSolNormalStrList }}</p>
+                            @endif
                             <p class="mt-0 mb-0 fs-card-text"><strong style="color:{{ $empres->colorDos }}">Garantia:</strong> {{ $producto->garantia }}</p>
                         </div>
                     </div>

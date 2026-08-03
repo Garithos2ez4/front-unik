@@ -9,4 +9,5 @@ interface HomeServiceInterface {
     public function getProductsByImpresoras();
     public function getAccesorios();
     public function getExclusivos();
+    public function getProductsBySuministros();
 }

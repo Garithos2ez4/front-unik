@@ -39,4 +39,8 @@ class HomeService implements HomeServiceInterface
     public function getExclusivos(){
         return $this->productoRepository->getCarrouselAllByColumn('estadoProductoWeb','OFERTA')->shuffle()->take(9);
     }
+
+    public function getProductsBySuministros(){
+        return $this->productoRepository->getCarrouselAllByCategoria(14)->shuffle()->take(17);
+    }
 }

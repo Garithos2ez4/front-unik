@@ -31,7 +31,7 @@ class NovedadesController extends Controller
         $productos = $this->productoService->getLatestProductsPagination(30, $request);
         
         //Lista de productos (Ajax para los filtros)
-        if($request->query('page') || $request->query('filtro')){
+        if($request->ajax()){
             $responseAjax = $this->productoService->getAjaxListaProductos($request,$empresa,$productos);
             return $responseAjax;
         }
