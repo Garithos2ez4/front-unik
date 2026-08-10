@@ -21,32 +21,20 @@
     @endif
 
     <div class="row justify-content-center">
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-8 mb-4">
             <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body p-4 text-center">
-                    <img src="https://logospng.org/download/mercado-pago/logo-mercado-pago-icon-1024.png" alt="MercadoPago" width="100" class="mb-3">
-                    <h5 class="fw-bold">Pagar con MercadoPago</h5>
-                    <p class="text-muted small">Paga de forma segura con tu tarjeta de credito, debito o dinero en cuenta.</p>
-                    <form action="{{ route('checkout.mercadopago') }}" method="POST">
+                <div class="card-body p-5 text-center">
+                    <i class="bi bi-whatsapp text-success mb-3" style="font-size: 4rem;"></i>
+                    <h4 class="fw-bold">Solicitar los numeros de cuenta,link de pago O QR de Pago</h4>
+                    <p class="text-muted mt-3 mb-4">
+                        Por el momento nuestras pasarelas automáticas están en mantenimiento.<br>
+                        Al hacer clic en el botón de abajo, separaremos tus productos (S/ {{ number_format($total, 2) }}) y te generaremos un número de orden.
+                        Podrás comunicarte con nosotros por WhatsApp para solicitar tu link de pago o código QR.
+                    </p>
+                    <form action="{{ route('checkout.manual') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-lg w-100 fw-bold text-white shadow-sm mt-3" style="background-color: #009ee3;">
-                            Pagar S/ {{ number_format($total, 2) }}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body p-4 text-center">
-                    <img src="https://www.niubiz.com.pe/wp-content/uploads/2019/12/logo-niubiz.png" alt="Niubiz" width="150" class="mb-3" style="object-fit: contain; height: 100px;">
-                    <h5 class="fw-bold">Pagar con Niubiz</h5>
-                    <p class="text-muted small"> pagos con QR (Yape, Plin).</p>
-                    <form action="{{ route('checkout.niubiz') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-lg w-100 fw-bold text-white shadow-sm mt-3" style="background-color: #f73b3e;">
-                            Pagar S/ {{ number_format($total, 2) }}
+                        <button type="submit" class="btn btn-lg w-100 fw-bold text-white shadow-sm" style="background-color: #25D366; border-radius: 10px;">
+                            <i class="bi bi-bag-check-fill me-2"></i> Confirmar Pedido y Solicitar Pago
                         </button>
                     </form>
                 </div>

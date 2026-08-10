@@ -41,10 +41,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.innerHTML = originalHTML;
                 this.disabled = false;
                 if(data.success) {
-                    alert(data.message);
-                    window.location.reload(); // To update the cart icon count on header
+                    // Actualizar el contador del carrito
+                    let badge = document.getElementById('cart-badge-count');
+                    let wrapper = document.getElementById('cart-icon-wrapper');
+                    
+                    if (!badge && wrapper) {
+                        badge = document.createElement('span');
+                        badge.id = 'cart-badge-count';
+                        badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+                        badge.style.fontSize = '0.6rem';
+                        wrapper.appendChild(badge);
+                    }
+                    if (badge) {
+                        badge.innerText = data.cartCount;
+                    }
+
+                    // Rellenar datos del modal
+                    if(data.product) {
+                        document.getElementById('modal-cart-product-img').src = data.product.image;
+                        document.getElementById('modal-cart-product-name').innerText = data.product.name;
+                        document.getElementById('modal-cart-product-price').innerText = data.product.price;
+                        document.getElementById('modal-cart-product-qty').innerText = data.product.quantity;
+                    }
+
+                    // Mostrar el modal
+                    var cartModal = new bootstrap.Modal(document.getElementById('addedToCartModal'));
+                    cartModal.show();
                 } else {
-                    alert('Hubo un error al agregar el producto.');
+                    alert(data.message || 'Hubo un error al agregar el producto.');
                 }
             })
             .catch(err => {

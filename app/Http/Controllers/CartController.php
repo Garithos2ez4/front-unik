@@ -47,6 +47,10 @@ class CartController extends Controller
             return response()->json(['success' => false, 'message' => 'Este producto no está disponible para compra directa en la web.']);
         }
 
+        if (strtoupper($producto->estadoProductoWeb) === 'AGOTADO') {
+            return response()->json(['success' => false, 'message' => 'Este producto se encuentra agotado y no puede ser añadido al carrito.']);
+        }
+
         // Calcular precio final en SOLES usando el PreciosService y eliminar las comas del string
         $precioFormat = $producto->precioTotalSol($preciosService);
         $precio = (float) str_replace(',', '', $precioFormat);
@@ -72,7 +76,13 @@ class CartController extends Controller
         return response()->json([
             'success' => true, 
             'message' => 'Producto agregado al carrito',
-            'cartCount' => count($cart)
+            'cartCount' => count($cart),
+            'product' => [
+                'name' => $producto->nombreProducto,
+                'price' => number_format($precio, 2),
+                'image' => asset('storage/'.$producto->imagenProducto1),
+                'quantity' => $cart[$id]['quantity']
+            ]
         ]);
     }
 

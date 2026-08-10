@@ -43,7 +43,7 @@ class CheckoutController extends Controller
         return view('checkout.index', compact('cart', 'total', 'categorias', 'empresa', 'marcas', 'tipos', 'tipoCambio'));
     }
 
-    public function processMercadoPago(Request $request)
+    public function processManual(Request $request)
     {
         $cart = session()->get('cart', []);
         if (empty($cart)) {
@@ -51,28 +51,20 @@ class CheckoutController extends Controller
         }
 
         $cliente = Auth::guard('cliente')->user()->cliente;
-        
+
         $total = 0;
-        $items = [];
         foreach ($cart as $id => $item) {
             $price = $item['price'] ?? 0;
             if ($price <= 0) {
                 return back()->withErrors(['Un producto en tu carrito tiene precio invalido. Por favor, vacia tu carrito y vuelve a agregarlo.']);
             }
-            
-            $total += $price * $item['quantity'];
-            $items[] = [
-                "title" => $item['name'],
-                "quantity" => (int) $item['quantity'],
-                "unit_price" => (float) $price,
-                "currency_id" => "PEN"
-            ];
+            $total += round($price, 2) * $item['quantity'];
         }
 
         // Crear PedidoWeb inicial PENDIENTE
         $pedido = PedidoWeb::create([
             'idCliente' => $cliente->idCliente,
-            'pasarela' => 'mercadopago',
+            'pasarela' => 'whatsapp_manual',
             'total' => $total,
             'estado' => 'PENDIENTE'
         ]);
@@ -82,50 +74,32 @@ class CheckoutController extends Controller
                 'idPedidoWeb' => $pedido->idPedidoWeb,
                 'idProducto' => $id,
                 'cantidad' => $item['quantity'],
-                'precio' => $item['price']
+                'precio' => round($item['price'], 2)
             ]);
         }
 
-        // Crear Preferencia en MercadoPago API
-        $accessToken = env('MERCADOPAGO_ACCESS_TOKEN', 'APP_USR-TEST-TOKEN'); // TEST TOKEN
-        
-        $response = Http::withToken($accessToken)->withoutVerifying()->post('https://api.mercadopago.com/checkout/preferences', [
-            "items" => $items,
-            "payer" => [
-                "name" => $cliente->nombre,
-                "surname" => $cliente->apellidoPaterno,
-                "email" => Auth::guard('cliente')->user()->email
-            ],
-            "back_urls" => [
-                "success" => route('checkout.success', ['pedido' => $pedido->idPedidoWeb]),
-                "failure" => route('checkout.failure', ['pedido' => $pedido->idPedidoWeb]),
-                "pending" => route('checkout.pending', ['pedido' => $pedido->idPedidoWeb])
-            ],
-            "auto_return" => "approved",
-            "external_reference" => (string) $pedido->idPedidoWeb
-        ]);
+        // Limpiar el carrito
+        session()->forget('cart');
 
-        if ($response->successful()) {
-            $preference = $response->json();
-            // Redirigir al link de pago
-            return redirect($preference['init_point']);
-        }
+        // Cargar detalles con producto para obtener modelos
+        $pedido->load('detalles.producto');
 
-        return back()->withErrors(['Error al contactar con MercadoPago. Revisa las credenciales.']);
-    }
+        $whatsapp = '959062011';
+        $modelos = $pedido->detalles->map(function ($detalle) {
+            return $detalle->producto->modelo ?? $detalle->producto->nombreProducto ?? 'Producto';
+        })->implode(', ');
 
-    public function processNiubiz(Request $request)
-    {
-        // Aqui iria la integracion con Niubiz (VisaNet)
-        // Usualmente requiere generar un token de seguridad (Security Token), luego un token de sesion (Session Key),
-        // y renderizar un script en la vista con el JS de Niubiz.
-        return back()->withErrors(['Niubiz aun no ha sido configurado por completo (Requiere llaves de comercio reales).']);
+        $mensaje = urlencode("Hola, acabo de realizar el pedido #{$pedido->idPedidoWeb} del modelo {$modelos} por S/ " . number_format($pedido->total, 2) . ". Me gustaría solicitar los numeros de cuenta o el link o QR de pago.");
+        $linkWs = "https://wa.me/51{$whatsapp}?text={$mensaje}";
+
+        // Redirigir directamente a WhatsApp
+        return redirect($linkWs);
     }
 
     public function success(Request $request, $pedidoId)
     {
         $pedido = PedidoWeb::findOrFail($pedidoId);
-        
+
         if ($request->get('collection_status') === 'approved' || $request->get('status') === 'approved') {
             $pedido->estado = 'PAGADO';
             $pedido->codigoTransaccion = $request->get('payment_id');

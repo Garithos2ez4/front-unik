@@ -55,11 +55,11 @@
                         </div>
                         <div class="col-md-1 text-center d-none d-md-block">
                             <a href="{{ route('cart.index') }}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">
-                                <span class="position-relative d-inline-block">
+                                <span class="position-relative d-inline-block" id="cart-icon-wrapper">
                                     <i class="bi bi-cart3" style="font-size: 1.8rem"></i>
                                     @php $cartCount = count(session('cart', [])); @endphp
                                     @if($cartCount > 0)
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                        <span id="cart-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                                             {{ $cartCount }}
                                         </span>
                                     @endif
@@ -286,6 +286,40 @@
             <br>
             <p class="text-end pe-2"><small class="text-hidden">By Leonardo.M.H. - Luigui C.O - Alonso D.C.R</small></p>
         </footer>
+    </div>
+    <!-- Added to Cart Modal -->
+    <div class="modal fade" id="addedToCartModal" tabindex="-1" aria-labelledby="addedToCartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title text-success fw-bold" id="addedToCartModalLabel"><i class="bi bi-check-circle-fill me-2"></i>Producto agregado a tu Carro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-3">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-3 col-md-2 text-center">
+                            <img id="modal-cart-product-img" src="" class="img-fluid rounded" alt="Producto">
+                        </div>
+                        <div class="col-9 col-md-10">
+                            <h6 id="modal-cart-product-name" class="fw-bold mb-1"></h6>
+                            <div class="d-flex align-items-center mt-2">
+                                <h5 class="mb-0 text-danger fw-bold me-3">S/ <span id="modal-cart-product-price"></span></h5>
+                                <span class="text-muted small">Cantidad: <span id="modal-cart-product-qty" class="fw-bold text-dark"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sugerencias -->
+                    <div class="alert alert-warning py-2 mb-0 mt-3 d-flex align-items-center" style="font-size: 0.85rem; border-radius: 10px;">
+                        <i class="bi bi-exclamation-circle-fill text-warning fs-5 me-2"></i>
+                        <span>Los productos de tu carro de compras pueden agotarse próximamente. Cómpralos pronto.</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 d-flex justify-content-end bg-light" style="border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;">
+                    <button type="button" class="btn btn-link text-decoration-none text-dark fw-bold" data-bs-dismiss="modal">Seguir comprando</button>
+                    <a href="{{ route('cart.index') }}" class="btn btn-dark px-4 rounded-pill fw-bold">Ir al Carro</a>
+                </div>
+            </div>
+        </div>
     </div>
     @stack('scripts')
 </body>

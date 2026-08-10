@@ -51,7 +51,7 @@ class ClienteAuthController extends Controller
             'idTipoDocumento' => 'required|integer',
             'numeroDocumento' => 'required|string|max:20',
             'telefono' => 'required|string|max:20',
-            'email' => 'required|email|unique:Detalle_Cliente,email',
+            'email' => 'nullable|email|unique:Detalle_Cliente,email',
             'password' => ['required', 'confirmed', Password::min(6)],
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
@@ -59,7 +59,6 @@ class ClienteAuthController extends Controller
             'idTipoDocumento.required' => 'Selecciona un tipo de documento.',
             'numeroDocumento.required' => 'El numero de documento es obligatorio.',
             'telefono.required' => 'El telefono es obligatorio.',
-            'email.required' => 'El correo electronico es obligatorio.',
             'email.unique' => 'Este correo ya esta registrado.',
             'password.required' => 'La contrasena es obligatoria.',
             'password.confirmed' => 'Las contrasenas no coinciden.',
@@ -139,24 +138,34 @@ class ClienteAuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'numeroDocumento' => 'required|string',
             'password' => 'required',
         ], [
-            'email.required' => 'Ingresa tu correo electronico.',
+            'numeroDocumento.required' => 'Ingresa tu número de documento.',
             'password.required' => 'Ingresa tu contrasena.',
         ]);
 
-        $credentials = $request->only('email', 'password');
-        $remember = $request->filled('remember');
+        $cliente = Cliente::where('numeroDocumento', $request->numeroDocumento)->first();
 
-        if (Auth::guard('cliente')->attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('home'))->with('success', 'Bienvenido de nuevo!');
+        if (!$cliente) {
+            return back()->withErrors([
+                'numeroDocumento' => 'No encontramos una cuenta con ese número de documento.',
+            ])->onlyInput('numeroDocumento');
         }
 
-        return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
-        ])->onlyInput('email');
+        $detalleCliente = DetalleCliente::where('idCliente', $cliente->idCliente)->first();
+
+        if (!$detalleCliente || !\Illuminate\Support\Facades\Hash::check($request->password, $detalleCliente->password)) {
+            return back()->withErrors([
+                'numeroDocumento' => 'Las credenciales no coinciden con nuestros registros.',
+            ])->onlyInput('numeroDocumento');
+        }
+
+        $remember = $request->filled('remember');
+        Auth::guard('cliente')->login($detalleCliente, $remember);
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('home'))->with('success', 'Bienvenido de nuevo!');
     }
 
     /**

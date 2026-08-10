@@ -26,6 +26,28 @@
                     <form method="POST" action="{{ route('cliente.register') }}">
                         @csrf
                         <div class="row">
+                            <div class="col-md-5 mb-3">
+                                <label for="idTipoDocumento" class="form-label fw-semibold">Tipo Documento <span class="text-danger">*</span></label>
+                                <select class="form-select" id="idTipoDocumento" name="idTipoDocumento" required>
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1" {{ old('idTipoDocumento') == 1 ? 'selected' : '' }}>DNI</option>
+                                    <option value="2" {{ old('idTipoDocumento') == 2 ? 'selected' : '' }}>RUC</option>
+                                    <option value="3" {{ old('idTipoDocumento') == 3 ? 'selected' : '' }}>CE</option>
+                                    <option value="4" {{ old('idTipoDocumento') == 4 ? 'selected' : '' }}>Pasaporte</option>
+                                </select>
+                            </div>
+                            <div class="col-md-7 mb-3">
+                                <label for="numeroDocumento" class="form-label fw-semibold">N&uacute;mero de Documento <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="numeroDocumento" name="numeroDocumento" value="{{ old('numeroDocumento') }}" placeholder="Ingresa tu documento" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="btnBuscarDoc" title="Buscar datos">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                                <div id="docFeedback" class="form-text"></div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-12 mb-3">
                                 <label for="nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Tu nombre" required>
@@ -39,22 +61,6 @@
                                 <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno" value="{{ old('apellidoMaterno') }}" placeholder="Apellido materno">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-5 mb-3">
-                                <label for="idTipoDocumento" class="form-label fw-semibold">Tipo Documento <span class="text-danger">*</span></label>
-                                <select class="form-select" id="idTipoDocumento" name="idTipoDocumento" required>
-                                    <option value="" disabled selected>Selecciona</option>
-                                    <option value="1" {{ old('idTipoDocumento') == 1 ? 'selected' : '' }}>DNI</option>
-                                    <option value="2" {{ old('idTipoDocumento') == 2 ? 'selected' : '' }}>RUC</option>
-                                    <option value="3" {{ old('idTipoDocumento') == 3 ? 'selected' : '' }}>CE</option>
-                                    <option value="4" {{ old('idTipoDocumento') == 4 ? 'selected' : '' }}>Pasaporte</option>
-                                </select>
-                            </div>
-                            <div class="col-md-7 mb-3">
-                                <label for="numeroDocumento" class="form-label fw-semibold">N&uacute;mero de Documento <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="numeroDocumento" name="numeroDocumento" value="{{ old('numeroDocumento') }}" placeholder="Ingresa tu documento" required>
-                            </div>
-                        </div>
                         <div class="mb-3">
                             <label for="telefono" class="form-label fw-semibold">Telefono <span class="text-danger">*</span></label>
                             <div class="input-group">
@@ -63,10 +69,10 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label fw-semibold">Correo Electronico <span class="text-danger">*</span></label>
+                            <label for="email" class="form-label fw-semibold">Correo Electronico</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="ejemplo@correo.com" required>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="ejemplo@correo.com">
                             </div>
                         </div>
                         <div class="row">
@@ -118,37 +124,61 @@
         }
     }
 
-    document.getElementById('numeroDocumento').addEventListener('blur', function() {
-        const documento = this.value;
-        if(documento.length > 0) {
-            fetch(`{{ route('api.cliente.buscar') }}?numeroDocumento=${documento}`)
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        const cliente = data.cliente;
-                        document.getElementById('nombre').value = cliente.nombre;
-                        document.getElementById('apellidoPaterno').value = cliente.apellidoPaterno;
-                        document.getElementById('apellidoMaterno').value = cliente.apellidoMaterno;
-                        document.getElementById('idTipoDocumento').value = cliente.idTipoDocumento;
-                        document.getElementById('telefono').value = cliente.telefono;
-                        if(cliente.correo) {
-                            document.getElementById('email').value = cliente.correo;
-                        }
-                        
-                        // Opcional: mostrar un pequeno feedback visual
-                        const toast = document.createElement('div');
-                        toast.className = 'alert alert-success mt-2 py-1 px-2 position-absolute';
-                        toast.style.fontSize = '0.8rem';
-                        toast.style.top = '0';
-                        toast.style.right = '10px';
-                        toast.innerHTML = '<i class="bi bi-check-circle"></i> Datos autocompletados';
-                        this.parentNode.style.position = 'relative';
-                        this.parentNode.appendChild(toast);
-                        setTimeout(() => toast.remove(), 3000);
-                    }
-                })
-                .catch(error => console.error('Error buscando cliente:', error));
+    function buscarDocumento() {
+        const tipoDoc = document.getElementById('idTipoDocumento').value;
+        const documento = document.getElementById('numeroDocumento').value.trim();
+        const feedback = document.getElementById('docFeedback');
+        const btnBuscar = document.getElementById('btnBuscarDoc');
+
+        if (!tipoDoc) {
+            feedback.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle"></i> Selecciona el tipo de documento primero.</span>';
+            return;
+        }
+        if (!documento) {
+            feedback.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle"></i> Ingresa el número de documento.</span>';
+            return;
+        }
+
+        // Mostrar loading
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+        feedback.innerHTML = '<span class="text-muted">Buscando datos...</span>';
+
+        // Primero buscar en la base de datos interna
+        fetch(`{{ route('api.cliente.buscar') }}?numeroDocumento=${documento}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const c = data.cliente;
+                    document.getElementById('nombre').value = c.nombre || '';
+                    document.getElementById('apellidoPaterno').value = c.apellidoPaterno || '';
+                    document.getElementById('apellidoMaterno').value = c.apellidoMaterno || '';
+                    document.getElementById('idTipoDocumento').value = c.idTipoDocumento || tipoDoc;
+                    document.getElementById('telefono').value = c.telefono || '';
+                    if (c.correo) document.getElementById('email').value = c.correo;
+                    feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Datos autocompletados desde nuestro sistema.</span>';
+                    btnBuscar.disabled = false;
+                    btnBuscar.innerHTML = '<i class="bi bi-search"></i>';
+                } else {
+                    feedback.innerHTML = '<span class="text-muted"><i class="bi bi-info-circle"></i> No se encontraron datos previos. Completa el formulario manualmente.</span>';
+                    btnBuscar.disabled = false;
+                    btnBuscar.innerHTML = '<i class="bi bi-search"></i>';
+                }
+            })
+            .catch(() => {
+                feedback.innerHTML = '<span class="text-warning"><i class="bi bi-exclamation-triangle"></i> Error al buscar. Completa manualmente.</span>';
+                btnBuscar.disabled = false;
+                btnBuscar.innerHTML = '<i class="bi bi-search"></i>';
+            });
+    }
+
+    document.getElementById('btnBuscarDoc').addEventListener('click', buscarDocumento);
+    document.getElementById('numeroDocumento').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            buscarDocumento();
         }
     });
 </script>
 @endsection
+

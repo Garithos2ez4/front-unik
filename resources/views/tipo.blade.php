@@ -106,7 +106,7 @@
             <x-filtro_small :empresaFillSmall="$empresa" :pagina="'tipo'" :parametrosFillSmall="$parametrosFiltro" :totalProductsSmall="count($productos)" :paginaFillSmall="'tipo'"/>
         </div>
         <div class="col-12 d-flex d-sm-none">
-            <x-card_producto_small :selectedProducts="$productos" :colsmall="6" :colmedio="4" :empres="$empresa" :dolar="$tipoCambio"/>
+            <x-partials.lista-productos :productos="$productos" :colsmall="6" :colmedio="4" :empres="$empresa" :dolar="$tipoCambio"/>
         </div>
     </div>
     <br>

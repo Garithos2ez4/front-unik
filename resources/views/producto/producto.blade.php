@@ -117,43 +117,47 @@
             $precioSolNormal = floatval(str_replace(',', '', $precioSolNormalStr));
             $descuentoPorcentaje = 0;
             if ($precioSolNormal > $precioSol && $precioSolNormal > 0) {
-                $descuentoPorcentaje = round((($precioSolNormal - $precioSol) / $precioSolNormal) * 100);
+            $descuentoPorcentaje = round((($precioSolNormal - $precioSol) / $precioSolNormal) * 100);
             }
             @endphp
             @if(floatval(str_replace(',', '', $producto->precioTotalDolar($preciosService))) < 1 || !$mostrarPrecio)
                 <h3 style="color:{{$empresa->colorDos}}">Consultar precio por WhatsApp</h3>
-            @else
+                @else
                 <h3 style="{{ $descuentoPorcentaje > 0 ? 'color: #dc3545;' : 'color:'.$empresa->colorDos }}">
                     S/.PEN {{ $precioSolStr }}
                     @if($descuentoPorcentaje > 0)
-                        <span class="badge bg-danger ms-2">-{{ $descuentoPorcentaje }}%</span>
+                    <span class="badge bg-danger ms-2">-{{ $descuentoPorcentaje }}%</span>
                     @endif
                 </h3>
                 @if($descuentoPorcentaje > 0)
-                    <h5 class="text-muted text-decoration-line-through">S/.PEN {{ $precioSolNormalStr }}</h5>
+                <h5 class="text-muted text-decoration-line-through">S/.PEN {{ $precioSolNormalStr }}</h5>
                 @endif
-            @endif
-            <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{(floatval(str_replace(',', '', $producto->precioTotalSol($preciosService))) < 1 || !$mostrarPrecio || !$producto->usar_tc_fijo) ? '':'$USD '.$producto->precioTotalDolar($preciosService) }} </h5>
-            <p class="mb-0"><i class="bi bi-shield-check"></i> Garant&iacute;a de {{$producto->garantia}}.</p>
-            <p class="mb-0"><i class='bx bxs-truck'></i> Preguntar por envio y disponibilidad.</p>
-            <br>
-            <p class="mb-0"><strong>Marca:</strong> {{$producto->MarcaProducto->nombreMarca}}</p>
-            <p class="mb-0"><strong>Modelo:</strong> {{$producto->modelo}}</p>
-            <p class="mb-0"><strong>P/N:</strong> {{$producto->partNumber}}</p>
-            <br>
-            <div class="col-12 col-md-10 mt-2">
-                <div class="d-grid gap-2 d-md-flex">
-                    <a class="btn btn-success" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer" role="button"><i class="bi bi-whatsapp"></i> Comprar via whatsapp</a>
+                @endif
+                <h5 style="color:{{$empresa->colorUno}};opacity:0.5">{{(floatval(str_replace(',', '', $producto->precioTotalSol($preciosService))) < 1 || !$mostrarPrecio || !$producto->usar_tc_fijo) ? '':'$USD '.$producto->precioTotalDolar($preciosService) }} </h5>
+                <p class="mb-0"><i class="bi bi-shield-check"></i> Garant&iacute;a de {{$producto->garantia}}.</p>
+                <p class="mb-0"><i class='bx bxs-truck'></i> Preguntar por envio y disponibilidad.</p>
+                <br>
+                <p class="mb-0"><strong>Marca:</strong> {{$producto->MarcaProducto->nombreMarca}}</p>
+                <p class="mb-0"><strong>Modelo:</strong> {{$producto->modelo}}</p>
+                <p class="mb-0"><strong>P/N:</strong> {{$producto->partNumber}}</p>
+                <br>
+                <div class="col-12 col-md-10 mt-2">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a class="btn btn-success" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer" role="button"><i class="bi bi-whatsapp"></i> Comprar via whatsapp</a>
 
-                    @if($producto->precioTotalSol($preciosService) > 0 && (!$producto->DetalleProducto || $producto->DetalleProducto->mostrarPrecioWeb) && $mostrarPrecio)
-                    {{--<button class="btn btn-outline-dark add-to-cart-btn" data-id="{{ $producto->idProducto }}">
-                    <i class="bi bi-cart-plus"></i> Añadir al carrito
-                    </button>--}}
-                    @endif
+                        @if(strtoupper($producto->estadoProductoWeb) === 'AGOTADO')
+                        <button class="btn btn-outline-secondary" disabled>
+                            <i class="bi bi-x-circle"></i> Agotado
+                        </button>
+                        @elseif($producto->precioTotalSol($preciosService) > 0 && (!$producto->DetalleProducto || $producto->DetalleProducto->mostrarPrecioWeb) && $mostrarPrecio)
+                        <button class="btn btn-outline-dark add-to-cart-btn" data-id="{{ $producto->idProducto }}">
+                            <i class="bi bi-cart-plus"></i> Añadir al carrito
+                        </button>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="col-6">
-            </div>
+                <div class="col-6">
+                </div>
         </div>
     </div>
     <br>

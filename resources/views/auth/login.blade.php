@@ -33,10 +33,10 @@
                     <form method="POST" action="{{ route('cliente.login') }}">
                         @csrf
                         <div class="mb-3">
-                            <label for="email" class="form-label fw-semibold">Correo electronico</label>
+                            <label for="numeroDocumento" class="form-label fw-semibold">Número de Documento</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="ejemplo@correo.com" required>
+                                <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+                                <input type="text" class="form-control" id="numeroDocumento" name="numeroDocumento" value="{{ old('numeroDocumento') }}" placeholder="Ingresa tu DNI, RUC o CE" required>
                             </div>
                         </div>
                         <div class="mb-3">

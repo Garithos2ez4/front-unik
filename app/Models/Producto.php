@@ -122,25 +122,25 @@ class Producto extends Model
     public function precioTotalDolar($preciosService)
     {
         $precio = $preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->estadoProductoWeb, $this->gananciaExtra, $this);
-        return number_format(ceil($precio), 2, '.', ',');
+        return number_format(round($precio, 2), 2, '.', ',');
     }
 
     public function precioTotalSol($preciosService)
     {
         $precio = $preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'SOL', $this->estadoProductoWeb, $this->gananciaExtra, $this);
-        return number_format(ceil($precio), 2, '.', ',');
+        return number_format(round($precio, 2), 2, '.', ',');
     }
 
     public function precioNormalDolar($preciosService)
     {
         $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->gananciaExtra, $this);
-        return number_format(ceil($precio), 2, '.', ',');
+        return number_format(round($precio, 2), 2, '.', ',');
     }
 
     public function precioNormalSol($preciosService)
     {
         $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'SOL', $this->gananciaExtra, $this);
-        return number_format(ceil($precio), 2, '.', ',');
+        return number_format(round($precio, 2), 2, '.', ',');
     }
 
     public function publicImages()

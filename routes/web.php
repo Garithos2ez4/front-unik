@@ -1,6 +1,7 @@
 <?php
+
 use App\Models\Producto;
-use App\Models\CategoriaProducto; 
+use App\Models\CategoriaProducto;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
@@ -15,7 +16,6 @@ use App\Http\Controllers\OfertasController;
 use App\Http\Controllers\LiquidacionController;
 use App\Http\Controllers\MedioDePagoController;
 use App\Http\Controllers\EnviosController;
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\PrivacidadController;
 use App\Http\Controllers\GarantiaController;
@@ -27,7 +27,7 @@ use App\Http\Controllers\ScriptController;
 
 use App\Http\Controllers\ClienteAuthController;
 
-Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/css/dynamic-styles.css', [StyleController::class, 'generateStyles'])->name('css.dynamic-styles');
 Route::get('/css/slide-styles.css', [StyleController::class, 'carruselMarcasStyles'])->name('css.carrusel-marcas-styles');
 
@@ -48,19 +48,19 @@ Route::get('/buscar/search', [BuscarController::class, 'search'])->name('search'
 Route::get('/producto/{slug}', [ProductoController::class, 'index'])->name('producto');
 Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades');
 
-Route::get('/ofertas', [OfertasController::class,'index'])->name('ofertas');
-Route::get('/liquidacion', [LiquidacionController::class,'index'])->name('liquidacion');
-Route::get('/mediodepago', [MedioDePagoController::class,'index'])->name('mediodepago');
-Route::get('/envios', [EnviosController::class,'index'])->name('envios');
-Route::get('/reviews', [ReviewsController::class,'index'])->name('reviews');
-Route::post('/reviews', [ReviewsController::class,'store'])->name('reviews.store');
-Route::get('/reviews/cliente/{documento}', [ReviewsController::class,'buscarCliente'])->name('reviews.cliente');
-Route::get('/privacidad', [PrivacidadController::class,'index'])->name('privacidad');
-Route::get('/garantia', [GarantiaController::class,'index'])->name('garantia');
-Route::get('/nosotros', [NosotrosController::class,'index'])->name('nosotros');
+Route::get('/ofertas', [OfertasController::class, 'index'])->name('ofertas');
+Route::get('/liquidacion', [LiquidacionController::class, 'index'])->name('liquidacion');
+Route::get('/mediodepago', [MedioDePagoController::class, 'index'])->name('mediodepago');
+Route::get('/envios', [EnviosController::class, 'index'])->name('envios');
+Route::get('/reviews', [ReviewsController::class, 'index'])->name('reviews');
+Route::post('/reviews', [ReviewsController::class, 'store'])->name('reviews.store');
+Route::get('/reviews/cliente/{documento}', [ReviewsController::class, 'buscarCliente'])->name('reviews.cliente');
+Route::get('/privacidad', [PrivacidadController::class, 'index'])->name('privacidad');
+Route::get('/garantia', [GarantiaController::class, 'index'])->name('garantia');
+Route::get('/nosotros', [NosotrosController::class, 'index'])->name('nosotros');
 
-Route::get('/libro-reclamaciones', [LibroReclamacionController::class,'index'])->name('libroreclamacion');
-Route::post('/nuevoreclamo', [LibroReclamacionController::class,'createReclamo'])->name('insertreclamo');
+Route::get('/libro-reclamaciones', [LibroReclamacionController::class, 'index'])->name('libroreclamacion');
+Route::post('/nuevoreclamo', [LibroReclamacionController::class, 'createReclamo'])->name('insertreclamo');
 
 use App\Http\Controllers\CartController;
 
@@ -77,9 +77,9 @@ Route::delete('/carrito/clear', [CartController::class, 'clear'])->name('cart.cl
 // Rutas de Checkout / Pasarelas de Pago
 // ========================================
 use App\Http\Controllers\CheckoutController;
+
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout/mercadopago', [CheckoutController::class, 'processMercadoPago'])->name('checkout.mercadopago');
-Route::post('/checkout/niubiz', [CheckoutController::class, 'processNiubiz'])->name('checkout.niubiz');
+Route::post('/checkout/manual', [CheckoutController::class, 'processManual'])->name('checkout.manual');
 Route::get('/checkout/success/{pedido}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/failure/{pedido}', [CheckoutController::class, 'failure'])->name('checkout.failure');
 Route::get('/checkout/pending/{pedido}', [CheckoutController::class, 'pending'])->name('checkout.pending');
