@@ -94,28 +94,20 @@
         </div>
     @else
     <div class="row">
-        <div class="col-md-2 d-none d-sm-block" >
-            <div class="row" style="height:3rem">
-            </div>
-            <x-filtro_medio :pagina="'tipo'" :parametrosFillMedio="$parametrosFiltro" :totalProductsMedio="count($productos)"/>
-        </div>
-        <div class="col-md-10 d-none d-md-flex" id="reload_filtro" >
-            <x-card_producto_medio :storage="$productos" :colsmall="6" :colmedio="3" :empres="$empresa" :dolar="$tipoCambio" :cantCards="16" :filtros="$filtros ?? null" />
-        </div>
-        <div class="col-12 d-block d-sm-none sticky-div" id="stickyDiv">
-            <x-filtro_small :empresaFillSmall="$empresa" :pagina="'tipo'" :parametrosFillSmall="$parametrosFiltro" :totalProductsSmall="count($productos)" :paginaFillSmall="'tipo'"/>
-        </div>
-        <div class="col-12 d-flex d-sm-none">
-            <x-partials.lista-productos :productos="$productos" :colsmall="6" :colmedio="4" :empres="$empresa" :dolar="$tipoCambio"/>
+        <div class="col-md-12">
+            <x-card_producto_medio :storage="$productos" :colsmall="6" :colmedio="3" :empres="$empresa" :dolar="$tipoCambio" :cantCards="16" :filtros="$parametrosFiltro" />
         </div>
     </div>
     <br>
     <div class="row">
         @php
-            $productoService = app('App\Services\ProductoServiceInterface');
-            // Use same category or type logic. Let's just pass 15 products randomly from the type or category.
-            // But we don't have $categoria directly accessible. Let's use getProductsFilter.
-            $sugerencias = $productoService->getProductsFilter('idTipo', $tipo->idTipo, 15, request());
+            $sugerencias = \App\Models\Producto::where('estadoProductoWeb', '<>', 'DESCONTINUADO')
+                ->whereHas('GrupoProducto', function($q) use ($tipo) {
+                    $q->where('idTipoProducto', $tipo->idTipoProducto);
+                })
+                ->inRandomOrder()
+                ->take(15)
+                ->get();
         @endphp
         <div class="col-12">
             <x-slider_medio :producto="$sugerencias" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Productos Sugeridos'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="'#'"/>

@@ -144,6 +144,7 @@
                             </li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('mediodepago')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Medios de pago</a></li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('envios')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Envios</a></li>
+                            <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('trabaja-con-nosotros')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Trabaja con Nosotros</a></li>
                             <li class="list-group-item fw-bold" style="background-color:{{$empresa->colorTres}}"><a href="{{route('reviews')}}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">Reviews & Comunidad</a></li>
 
                         </ul>
@@ -194,6 +195,9 @@
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                             <a class="nav-link" href="{{route('envios')}}">Envios</a>
+                        </li>
+                        <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="nav-link" href="{{route('trabaja-con-nosotros')}}">Trabaja con Nosotros</a>
                         </li>
                         <li class="nav-item" aria-labelledby="navbarDropdownMenuLink">
                             <a class="nav-link" href="{{route('reviews')}}">Reviews & Comunidad</a>

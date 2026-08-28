@@ -58,7 +58,7 @@
                                 $descPorcList = round((($precioSolNormalList - $precioSolList) / $precioSolNormalList) * 100);
                             }
                             @endphp
-                            <p class="mb-0 fs-card-text truncar-one-lineas">
+                            <p class="mb-0 fs-card-text">
                                 <strong style="color:{{ $empres->colorDos }}">Precio:</strong>
                                 <span class="precio-card" style="{{ $descPorcList > 0 ? 'color: #dc3545;' : '' }}">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $precioSolList < 1 ? 'Consultar' : 'S/.'.$precioSolStrList }}</span>
                                 <span class="fw-lighter">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalDolar($preciosService) < 1 || !$producto->usar_tc_fijo ? '' : '($'.$producto->precioTotalDolar($preciosService).')' }}</span>

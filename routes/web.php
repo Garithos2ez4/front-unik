@@ -26,8 +26,10 @@ use App\Http\Controllers\StyleController;
 use App\Http\Controllers\ScriptController;
 
 use App\Http\Controllers\ClienteAuthController;
+use App\Http\Controllers\TrabajaConNosotrosController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/trabaja-con-nosotros', [TrabajaConNosotrosController::class, 'index'])->name('trabaja-con-nosotros');
 Route::get('/css/dynamic-styles.css', [StyleController::class, 'generateStyles'])->name('css.dynamic-styles');
 Route::get('/css/slide-styles.css', [StyleController::class, 'carruselMarcasStyles'])->name('css.carrusel-marcas-styles');
 

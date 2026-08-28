@@ -58,6 +58,16 @@ class CheckoutController extends Controller
             if ($price <= 0) {
                 return back()->withErrors(['Un producto en tu carrito tiene precio invalido. Por favor, vacia tu carrito y vuelve a agregarlo.']);
             }
+            
+            $producto = \App\Models\Producto::find($id);
+            if (!$producto) {
+                return back()->withErrors(['Un producto en tu carrito ya no existe.']);
+            }
+            $mostrarPrecio = optional($producto->DetalleProducto)->mostrarPrecioWeb ?? true;
+            if (!$mostrarPrecio) {
+                return back()->withErrors(['El producto "' . $producto->nombreProducto . '" ya no está disponible para compra web. Por favor, elimina este producto de tu carrito.']);
+            }
+
             $total += round($price, 2) * $item['quantity'];
         }
 

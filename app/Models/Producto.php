@@ -41,7 +41,8 @@ class Producto extends Model
         'videoUrl2',
         'estadoProductoWeb',
         'slugProducto',
-        'usar_tc_fijo'
+        'usar_tc_fijo',
+        'tc_fijo'
     ];
 
 
@@ -58,7 +59,8 @@ class Producto extends Model
         'stockColombia' => 'int',
         'stockProveedor' => 'int',
         'idProveedor' => 'int',
-        'usar_tc_fijo' => 'boolean'
+        'usar_tc_fijo' => 'boolean',
+        'tc_fijo' => 'float'
     ];
 
     public static function boot()
@@ -122,25 +124,25 @@ class Producto extends Model
     public function precioTotalDolar($preciosService)
     {
         $precio = $preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->estadoProductoWeb, $this->gananciaExtra, $this);
-        return number_format(round($precio, 2), 2, '.', ',');
+        return number_format(round($precio, 1), 2, '.', ',');
     }
 
     public function precioTotalSol($preciosService)
     {
         $precio = $preciosService->getPrecioTotal($this->precioDolar, $this->idGrupo, 'SOL', $this->estadoProductoWeb, $this->gananciaExtra, $this);
-        return number_format(round($precio, 2), 2, '.', ',');
+        return number_format(round($precio, 1), 2, '.', ',');
     }
 
     public function precioNormalDolar($preciosService)
     {
         $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'DOLAR', $this->gananciaExtra, $this);
-        return number_format(round($precio, 2), 2, '.', ',');
+        return number_format(round($precio, 1), 2, '.', ',');
     }
 
     public function precioNormalSol($preciosService)
     {
         $precio = $preciosService->getPrecioTotalNormal($this->precioDolar, $this->idGrupo, 'SOL', $this->gananciaExtra, $this);
-        return number_format(round($precio, 2), 2, '.', ',');
+        return number_format(round($precio, 1), 2, '.', ',');
     }
 
     public function publicImages()

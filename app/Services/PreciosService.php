@@ -90,21 +90,27 @@ class PreciosService implements PreciosServiceInterface
         $empresa = $this->headerService->obtenerEmpresa();
         $gananciaValidate = $this->validateMoney($ganancia,$tipo,$producto);
         // Usar SIEMPRE NORMAL para que no aplique el descuento especial de OFERTA ni LIQUIDACION
-        $total = $this->getPrecioCalculado($precio,$grupo,$tipo,'NORMAL',$producto) * $this->porcent($empresa->comision) + $gananciaValidate;
+        $total = $this->getPrecioCalculado($precio,$grupo,$tipo,'NORMAL',$producto) * $this->porcent($empresa->comision);
+        
+        // Solo aplicar la ganancia extra al precio normal si es positiva.
+        // Si es negativa (descuento manual), no se resta del precio normal para que se refleje como un % de descuento visual.
+        if ($gananciaValidate > 0) {
+            $total += $gananciaValidate;
+        }
+
         return $total;
     }
 
     private function getTipoCambioPorProducto($producto)
     {
-        // Si el producto tiene un tipo de cambio personalizado, usarlo prioritariamente
-        if (!empty($producto->tc_fijo) && $producto->tc_fijo > 0) {
-            return $producto->tc_fijo;
-        }
-
-        // Si el checkbox "Usar Tipo de Cambio Fijo" está marcado (1) -> usar FIJO GLOBAL
-        // Si está desmarcado (0) -> usar SUNAT
-        if($producto->usar_tc_fijo){
-            return Calculadora::find(2)->tasaCambio; // FIJO
+        // usar_tc_fijo=1 = "Usar TC SUNAT" (toggle ON). usar_tc_fijo=0 = "Usar TC Fijo" (toggle OFF)
+        // Cuando el toggle esta APAGADO (0), se usa TC Fijo; cuando esta ENCENDIDO (1), se usa SUNAT
+        if(!$producto->usar_tc_fijo){
+            // Si el producto tiene un tipo de cambio personalizado, usarlo prioritariamente
+            if (!empty($producto->tc_fijo) && $producto->tc_fijo > 0) {
+                return $producto->tc_fijo;
+            }
+            return Calculadora::find(2)->tasaCambio; // FIJO GLOBAL
         }
 
         return $this->headerService->obtenerCambioDolar(); // SUNAT

@@ -6,7 +6,7 @@
         <div class="card-body">
             <div class="row" style="height:4rem">
                 <a href="{{ route('producto', [$producto->slugProducto]) }}" class="text-decoration-none text-dark fw-bold text-center fs-card-text">
-                    <h7 class="card-title letters truncar-tres-lineas">{{ $producto->nombreProducto }}</h7>
+                    <h2 class="card-title letters truncar-tres-lineas" style="font-size: 1rem; margin-bottom: 0;">{{ $producto->nombreProducto }}</h2>
                 </a>
             </div>
             <div class="row">
@@ -24,7 +24,7 @@
                     $descPorcInd = round((($precioSolNormalInd - $precioSolInd) / $precioSolNormalInd) * 100);
                     }
                     @endphp
-                    <p class="mb-0 fs-card-text truncar-one-lineas"><strong style="color:{{ $empres->colorDos }}">Precio:</strong> <span style="{{ $descPorcInd > 0 ? 'color: #dc3545;' : '' }}">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $precioSolInd < 1 ? 'Consultar' : 'S/.'.$precioSolStrInd }}</span>
+                    <p class="mb-0 fs-card-text"><strong style="color:{{ $empres->colorDos }}">Precio:</strong> <span style="{{ $descPorcInd > 0 ? 'color: #dc3545;' : '' }}">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $precioSolInd < 1 ? 'Consultar' : 'S/.'.$precioSolStrInd }}</span>
                         <span class="fw-lighter">{{ ($producto->DetalleProducto && !$producto->DetalleProducto->mostrarPrecioWeb) || $producto->precioTotalDolar($preciosService) < 1 || !$producto->usar_tc_fijo ? '' : '($'.$producto->precioTotalDolar($preciosService).')'}}</span>
                         @if($descPorcInd > 0)
                         <span class="badge bg-danger ms-1" style="font-size: 1.1rem;">-{{ $descPorcInd }}%</span>
