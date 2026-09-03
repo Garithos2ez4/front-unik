@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Producto;
-use App\Models\CategoriaProducto;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
@@ -20,6 +18,7 @@ use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\PrivacidadController;
 use App\Http\Controllers\GarantiaController;
 use App\Http\Controllers\NosotrosController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\LibroReclamacionController;
 
 use App\Http\Controllers\StyleController;
@@ -60,9 +59,12 @@ Route::get('/reviews/cliente/{documento}', [ReviewsController::class, 'buscarCli
 Route::get('/privacidad', [PrivacidadController::class, 'index'])->name('privacidad');
 Route::get('/garantia', [GarantiaController::class, 'index'])->name('garantia');
 Route::get('/nosotros', [NosotrosController::class, 'index'])->name('nosotros');
+Route::get('/preguntas-frecuentes', [FaqController::class, 'index'])->name('faq');
 
 Route::get('/libro-reclamaciones', [LibroReclamacionController::class, 'index'])->name('libroreclamacion');
 Route::post('/nuevoreclamo', [LibroReclamacionController::class, 'createReclamo'])->name('insertreclamo');
+
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
 use App\Http\Controllers\CartController;
 

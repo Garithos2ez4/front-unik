@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
-@section('title', $marca->nombreMarca)
+@section('title', $marca->nombreMarca . ' | ' . $empresa->nombreComercial)
+@section('description', 'Encuentra los mejores productos de la marca ' . $marca->nombreMarca . ' en ' . $empresa->nombreComercial . '. Calidad garantizada y envíos a todo el Perú.')
+
+@push('styles')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    @if(isset($productos) && method_exists($productos, 'count') && $productos->count() > 0)
+        @foreach($productos->take(10) as $index => $prod)
+        {
+          "@type": "ListItem",
+          "position": {{ $index + 1 }},
+          "url": "{{ route('producto', $prod->slugProducto) }}"
+        }@if(!$loop->last),@endif
+        @endforeach
+    @endif
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="container">
@@ -8,7 +29,7 @@
     <div class="row text-center align-items-center d-flex">
         <div class="col-12 align-items-center">
             <h1 class="fw-bold">{{$marca->nombreMarca}}</h1>
-            <img src="{{asset('storage/'.$marca->imagenMarca)}}" alt="Marca" height="50px" class="rounded-3">
+            <img src="{{asset('storage/'.$marca->imagenMarca)}}" alt="Logo de {{ $marca->nombreMarca }}" height="50px" class="rounded-3">
         </div>
     </div>
     @if(count($productos) == 0)

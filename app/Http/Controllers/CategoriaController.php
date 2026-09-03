@@ -31,9 +31,14 @@ class CategoriaController extends Controller
         
         //Variables propias del controlador
         $categoria = $this->categoriaService->getCategoriaXSlug($cat);
-        $grupo = $this->categoriaService->getGrupoXSlug($grup);
+        
+        if (!$categoria) {
+            abort(404);
+        }
 
-        if (!$categoria || !$grupo) {
+        $grupo = $this->categoriaService->getGrupoXSlug($grup, $categoria->idCategoriaProducto);
+
+        if (!$grupo) {
             abort(404);
         }
 

@@ -40,22 +40,30 @@ class HeaderService implements HeaderServiceInterface
     }
     public function obtenerEmpresa()
     {
-        return $this->empresaRepository->getOne('idEmpresa',self::$id);
+        return \Illuminate\Support\Facades\Cache::remember('header_empresa_'.self::$id, 60 * 30, function () {
+            return $this->empresaRepository->getOne('idEmpresa',self::$id);
+        });
     }
 
     public function obtenerCategorias()
     {
-        return $this->categoriaRepository->getAll();
+        return \Illuminate\Support\Facades\Cache::remember('header_categorias', 60 * 30, function () {
+            return $this->categoriaRepository->getAll();
+        });
     }
 
     public function obtenerMarcas()
     {
-        return $this->marcaRepository->getAll()->sortBy('nombreMarca'); //MarcaProducto::select('idMarca','nombreMarca','imagenMarca','slugMarca')->orderBy('nombreMarca','asc')->get();
+        return \Illuminate\Support\Facades\Cache::remember('header_marcas', 60 * 30, function () {
+            return $this->marcaRepository->getAll()->sortBy('nombreMarca');
+        });
     }
 
     public function obtenerTipo()
     {
-        return $this->tipoRepository->getAll();
+        return \Illuminate\Support\Facades\Cache::remember('header_tipo', 60 * 30, function () {
+            return $this->tipoRepository->getAll();
+        });
     }
     public function obtenerLinkRedes(){
         return EmpresaRedSocial::with('RedSocial')

@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
-@section('title', $categoria->nombreCategoria . ' | ' . (is_object($grupo) ? $grupo->nombreGrupo ?? 'Todos' : 'Todos'))
+@section('title', $categoria->nombreCategoria . ' | ' . (is_object($grupo) ? $grupo->nombreGrupo ?? 'Todos' : 'Todos') . ' | ' . $empresa->nombreComercial)
+@section('description', 'Compra ' . $categoria->nombreCategoria . (is_object($grupo) ? ' - ' . $grupo->nombreGrupo : '') . ' en ' . $empresa->nombreComercial . ' al mejor precio. ¡Descubre nuestras ofertas y envíos a todo el Perú!')
+
+@push('styles')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    @if(isset($productos) && method_exists($productos, 'count') && $productos->count() > 0)
+        @foreach($productos->take(10) as $index => $prod)
+        {
+          "@type": "ListItem",
+          "position": {{ $index + 1 }},
+          "url": "{{ route('producto', $prod->slugProducto) }}"
+        }@if(!$loop->last),@endif
+        @endforeach
+    @endif
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="container ">

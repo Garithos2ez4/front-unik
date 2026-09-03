@@ -69,8 +69,8 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     public function getLatestProductsPagination($limit, array $querys){
-        $latestIds = Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
-            ->orderBy('idProducto', 'desc')
+        $latestIds = Producto::where('estadoProductoWeb', '<>', 'DESCONTINUADO')
+            ->orderBy('updated_at', 'desc')->orderBy('idProducto', 'desc')
             ->take($limit)
             ->pluck('idProducto');
 
@@ -99,6 +99,11 @@ class ProductoRepository implements ProductoRepositoryInterface
                 $query->orderBy('precioDolar', $querys['orden']);
             }
         }
+
+        if(!isset($querys['orden'])){
+            $query->orderBy('updated_at', 'desc')->orderBy('idProducto', 'desc');
+        }
+
         return $query->paginate($limit);
     }
 
@@ -220,10 +225,10 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     public function getLatestProducts($limit = 15) {
-        return Producto::where('estadoProductoWeb','<>','DESCONTINUADO')
-                       ->orderBy('idProducto', 'desc')
-                       ->take($limit)
-                       ->get();
+        return Producto::where('estadoProductoWeb', '<>', 'DESCONTINUADO')
+            ->orderBy('updated_at', 'desc')->orderBy('idProducto', 'desc')
+            ->take($limit)
+            ->get();
     }
 
     public function getSpectsByColumn($column,$data){
@@ -267,7 +272,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     public function getLatestCarrouselProducts($limit = 15) {
         return Producto::conHistorialRegistro()
                        ->where('estadoProductoWeb','<>','DESCONTINUADO')
-                       ->orderBy('idProducto', 'desc')
+                       ->orderBy('updated_at', 'desc')->orderBy('idProducto', 'desc')
                        ->take($limit)
                        ->get();
     }

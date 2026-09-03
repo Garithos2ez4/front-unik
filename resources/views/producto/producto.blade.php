@@ -1,7 +1,42 @@
 @extends('layouts.app')
 
-@section('title', $producto->nombreProducto)
+@section('title', $producto->nombreProducto . ' | ' . $producto->MarcaProducto->nombreMarca . ' | ' . $empresa->nombreComercial)
+@section('description', Str::limit(strip_tags(str_replace(["\r", "\n"], ' ', $producto->descripcionProducto)), 160))
+@section('og_image', $producto->publicImages()[0])
+@section('og_type', 'product')
 
+@push('styles')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ $producto->nombreProducto }}",
+  "image": [
+    "{{ $producto->publicImages()[0] }}"
+  ],
+  "description": "{{ Str::limit(strip_tags(str_replace(["\r", "\n"], ' ', $producto->descripcionProducto)), 160) }}",
+  "sku": "{{ $producto->partNumber ?: $producto->modelo }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ $producto->MarcaProducto->nombreMarca }}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ url()->current() }}",
+    "priceCurrency": "PEN",
+    "price": "{{ floatval(str_replace(',', '', $producto->precioTotalSol($preciosService))) }}",
+    "availability": "{{ strtoupper($producto->estadoProductoWeb) === 'AGOTADO' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock' }}"
+  }
+  @if($producto->reviews->count() > 0)
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ $producto->reviews->avg('calificacion') }}",
+    "reviewCount": "{{ $producto->reviews->count() }}"
+  }
+  @endif
+}
+</script>
+@endpush
 @section('content')
 <br>
 <br>
@@ -16,15 +51,15 @@
                     $slideOffset = isset($imagesCount) ? $imagesCount : 4; // Asume 4 im&aacute;genes por defecto
                     @endphp
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="{{$producto->displayImg($producto->publicImages()[0])}}active" aria-current="true" aria-label="Slide 1">
-                        <img src="{{$producto->publicImages()[0]}}" class="d-block w-100 productimg border" alt="...">
+                        <img src="{{$producto->publicImages()[0]}}" class="d-block w-100 productimg border" alt="{{ $producto->nombreProducto }} - Vista 1">
                     </a>
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2" class="{{$producto->displayImg($producto->publicImages()[1])}}">
-                        <img src="{{$producto->publicImages()[1]}}" class="d-block w-100 productimg border" alt="..."></a>
+                        <img src="{{$producto->publicImages()[1]}}" class="d-block w-100 productimg border" alt="{{ $producto->nombreProducto }} - Vista 2"></a>
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3" class="{{$producto->displayImg($producto->publicImages()[2])}}">
-                        <img src="{{$producto->publicImages()[2]}}" class="d-block w-100 productimg border" alt="...">
+                        <img src="{{$producto->publicImages()[2]}}" class="d-block w-100 productimg border" alt="{{ $producto->nombreProducto }} - Vista 3">
                     </a>
                     <a type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4" class="{{$producto->displayImg($producto->publicImages()[3])}}">
-                        <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 productimg border" alt="...">
+                        <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 productimg border" alt="{{ $producto->nombreProducto }} - Vista 4">
                     </a>
                     <!-- Miniaturas en el lado izquierdo -->
                     @if($producto->videoUrl1)
@@ -50,16 +85,16 @@
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
                         <div class="carousel-inner border shadow">
                             <div class="carousel-item active">
-                                <img src="{{$producto->publicImages()[0]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[0])}}" alt="...">
+                                <img src="{{$producto->publicImages()[0]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[0])}}" alt="{{ $producto->nombreProducto }} - Principal">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{$producto->publicImages()[1]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[1])}}" alt="...">
+                                <img src="{{$producto->publicImages()[1]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[1])}}" alt="{{ $producto->nombreProducto }} - Detalle 1">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{$producto->publicImages()[2]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[2])}}" alt="...">
+                                <img src="{{$producto->publicImages()[2]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[2])}}" alt="{{ $producto->nombreProducto }} - Detalle 2">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[3])}}" alt="...">
+                                <img src="{{$producto->publicImages()[3]}}" class="d-block w-100 {{$producto->displayImg($producto->publicImages()[3])}}" alt="{{ $producto->nombreProducto }} - Detalle 3">
                             </div>
                             <!-- Video 1 -->
                             @if($producto->videoUrl1)
@@ -107,7 +142,7 @@
 
         <div class="col-12 col-md-6 pt-4">
             <h6 style="color:{{$empresa->colorUno}};opacity:0.5">{{$producto->GrupoProducto->nombreGrupo}}</h6>
-            <h1 style="color:{{$empresa->colorUno}}; font-size: 1.5rem;">{{$producto->nombreProducto}}</h1>
+            <h1 class="fs-3 fs-md-2 fw-bold" style="color:{{$empresa->colorUno}};">{{$producto->nombreProducto}}</h1>
             <h6 class="{{$producto->estadoColor()}}">{{$producto->estadoProductoWeb}}</h6>
             @php
             $mostrarPrecio = optional($producto->DetalleProducto)->mostrarPrecioWeb ?? true;
@@ -142,15 +177,15 @@
                 <p class="mb-0"><strong>P/N:</strong> {{$producto->partNumber}}</p>
                 <br>
                 <div class="col-12 col-md-10 mt-2">
-                    <div class="d-grid gap-2 d-md-flex">
-                        <a class="btn btn-success" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer" role="button"><i class="bi bi-whatsapp"></i> Comprar via whatsapp</a>
+                    <div class="d-grid gap-3 d-md-flex">
+                        <a class="btn btn-success btn-lg fw-bold py-3 py-md-2" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer" role="button"><i class="bi bi-whatsapp"></i> Comprar via whatsapp</a>
 
                         @if(strtoupper($producto->estadoProductoWeb) === 'AGOTADO')
-                        <button class="btn btn-outline-secondary" disabled>
+                        <button class="btn btn-agotado-navy btn-lg fw-bold py-3 py-md-2" disabled>
                             <i class="bi bi-x-circle"></i> Agotado
                         </button>
                         @elseif($producto->precioTotalSol($preciosService) > 0 && (!$producto->DetalleProducto || $producto->DetalleProducto->mostrarPrecioWeb) && $mostrarPrecio)
-                        <button class="btn btn-outline-dark add-to-cart-btn" data-id="{{ $producto->idProducto }}">
+                        <button class="btn btn-outline-dark btn-lg fw-bold py-3 py-md-2 add-to-cart-btn" data-id="{{ $producto->idProducto }}">
                             <i class="bi bi-cart-plus"></i> Añadir al carrito
                         </button>
                         @endif
@@ -194,7 +229,7 @@
             <div class="row">
                 <ul class="list-group list-group-flush ">
                     @foreach($producto->Caracteristicas_Producto as $detalle)
-                    <li class="list-group-item bg-body"><strong>{{$detalle->Caracteristicas->especificacion}}: </strong>{{$detalle->caracteristicaProducto}}</li>
+                    <li class="list-group-item bg-body p-3"><strong>{{$detalle->Caracteristicas->especificacion}}: </strong>{{$detalle->caracteristicaProducto}}</li>
                     @endforeach
                 </ul>
             </div>
@@ -280,7 +315,29 @@
     <div class="row">
         <x-slider_medio :producto="$productosCategoria" :empre="$empresa" :cambio="$tipoCambio" :titulo="'Productos similares'" :sizeCardMed="'20%'" :slideMedio="5" :slideSmall="8" :link="route('categoria', [$producto->GrupoProducto->CategoriaProducto->slugCategoria ,$producto->GrupoProducto->slugGrupo])" />
     </div>
+    </div>
     <br>
 </div>
+
+<!-- Floating Action Buttons (Mobile Only) -->
+<div class="d-block d-md-none fixed-bottom bg-white shadow-lg p-3 border-top" style="z-index: 1040;">
+    <div class="d-flex gap-2">
+        <a class="btn btn-success flex-grow-1 fw-bold py-2" href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola%2C%20estoy%20interesado%20en%20{{$producto->nombreProducto}}%20de%20su%20sitio%20web. {{$miUrl}}" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-whatsapp"></i> Comprar
+        </a>
+        @if(strtoupper($producto->estadoProductoWeb) === 'AGOTADO')
+        <button class="btn btn-agotado-navy flex-grow-1 fw-bold py-2" disabled>
+            <i class="bi bi-x-circle"></i> Agotado
+        </button>
+        @elseif($producto->precioTotalSol($preciosService) > 0 && (!$producto->DetalleProducto || $producto->DetalleProducto->mostrarPrecioWeb) && $mostrarPrecio)
+        <button class="btn btn-dark flex-grow-1 fw-bold py-2 add-to-cart-btn" data-id="{{ $producto->idProducto }}">
+            <i class="bi bi-cart-plus"></i> Añadir
+        </button>
+        @endif
+    </div>
+</div>
+<!-- Spacing at the bottom so the floating bar doesn't cover content -->
+<div class="d-block d-md-none" style="height: 80px;"></div>
+
 <script src="{{ asset('js/producto.js') }}"></script>
 @endsection

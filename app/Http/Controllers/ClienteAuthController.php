@@ -189,7 +189,51 @@ class ClienteAuthController extends Controller
         $cliente = Cliente::where('numeroDocumento', $numeroDocumento)->first();
 
         if ($cliente) {
-            return response()->json(['success' => true, 'cliente' => $cliente]);
+            return response()->json(['success' => true, 'cliente' => $cliente, 'source' => 'db']);
+        }
+
+        // Token de Decolecta (mismo que usa logunk)
+        $token = 'sk_18100.Rx3tOWFF1nOw2Z3sJjmVcoyh9cTA3Wze';
+
+        if (strlen($numeroDocumento) == 8) {
+            $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+                ->withToken($token)
+                ->get('https://api.decolecta.com/v1/reniec/dni', [
+                    'numero' => $numeroDocumento
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                // La API de Decolecta devuelve directamente los datos sin el wrapper 'status'/'data'
+                if (isset($data['first_name']) || isset($data['nombres'])) {
+                    $clienteApi = [
+                        'nombre' => $data['first_name'] ?? $data['nombres'] ?? '',
+                        'apellidoPaterno' => $data['first_last_name'] ?? $data['apellidoPaterno'] ?? '',
+                        'apellidoMaterno' => $data['second_last_name'] ?? $data['apellidoMaterno'] ?? '',
+                        'idTipoDocumento' => 1
+                    ];
+                    return response()->json(['success' => true, 'cliente' => $clienteApi, 'source' => 'api']);
+                }
+            }
+        } elseif (strlen($numeroDocumento) == 11) {
+            $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+                ->withToken($token)
+                ->get('https://api.decolecta.com/v1/sunat/ruc', [
+                    'numero' => $numeroDocumento
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data['razon_social']) || isset($data['razonSocial'])) {
+                    $clienteApi = [
+                        'nombre' => $data['razon_social'] ?? $data['razonSocial'] ?? '',
+                        'apellidoPaterno' => '-',
+                        'apellidoMaterno' => '-',
+                        'idTipoDocumento' => 2
+                    ];
+                    return response()->json(['success' => true, 'cliente' => $clienteApi, 'source' => 'api']);
+                }
+            }
         }
 
         return response()->json(['success' => false]);

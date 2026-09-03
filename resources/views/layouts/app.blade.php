@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="En {{$empresa->nombreComercial}}, ofrecemos una amplia gama de productos tecnológiicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.">
+    <meta name="description" content="@yield('description', 'En '.$empresa->nombreComercial.', ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.')">
+    <link rel="canonical" href="@yield('canonical_url', url()->current())">
     <title>@yield('title', $empresa->nombreComercial)</title>
-    <meta property="og:title" content="@yield('og_title', $empresa->nombreComercial)">
-    <meta property="og:description" content="En {{$empresa->nombreComercial}}, ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.">
-    <meta property="og:image" content="@yield('og_image', 'https://www.tusitio.com/imagen.jpg')">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="@yield('og_title', View::getSection('title', $empresa->nombreComercial))">
+    <meta property="og:description" content="@yield('og_description', View::getSection('description', 'En '.$empresa->nombreComercial.', ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios. Encuentra lo que necesitas para estar a la vanguardia en el mundo digital.'))">
+    <meta property="og:image" content="@yield('og_image', asset('storage/'.$empresa->logo))">
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="@yield('og_site_name', $empresa->nombreComercial)">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', View::getSection('title', $empresa->nombreComercial))">
+    <meta name="twitter:description" content="@yield('twitter_description', View::getSection('description', 'En '.$empresa->nombreComercial.', ofrecemos una amplia gama de productos tecnológicos como monitores, laptops, componentes y accesorios.'))">
+    <meta name="twitter:image" content="@yield('twitter_image', View::getSection('og_image', asset('storage/'.$empresa->logo)))">
 
     <link rel="icon" href="{{asset('storage/'.$empresa->icon)}}" type="image/webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -39,13 +48,29 @@
                                 <i class="bi bi-list" style="font-size: 3rem"></i>
                             </a>
                         </div>
-                        <div class="col-8 col-md-2 text-end">
-                            <a href="{{$empresa->linkPaginaWeb}}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100"></a>
+                        <div class="col-3 col-md-2 text-center text-md-end">
+                            <a href="{{$empresa->linkPaginaWeb}}"><img src="{{asset('storage/'.$empresa->logo)}}" alt="{{$empresa->nombreComercial}}" width="100" height="100" class="img-fluid" style="max-height: 75px; object-fit: contain;"></a>
                         </div>
-                        <div class="col-12 col-md-7 align-middle">
-                            <form action="{{ route('buscar') }}" method="GET" class="input-group align-middle">
-                                <div class="input-group-text bg-empresa-uno text-white"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-md text-empresa-tres'></i></button></div>
-                                <input type="text" style="position:relative" name="header" id="search" class="form-control" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
+                        
+                        <!-- Carrito en Móvil -->
+                        <div class="col-5 text-end d-block d-md-none align-self-center">
+                            <a href="{{ route('cart.index') }}" class="text-decoration-none" style="color:{{$empresa->colorUno}}">
+                                <span class="position-relative d-inline-block">
+                                    <i class="bi bi-cart3" style="font-size: 2.2rem"></i>
+                                    @php $cartCount = count(session('cart', [])); @endphp
+                                    @if($cartCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                            {{ $cartCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </a>
+                        </div>
+
+                        <div class="col-12 col-md-7 align-middle mt-2 mt-md-0">
+                            <form action="{{ route('buscar') }}" method="GET" class="input-group input-group-lg align-middle shadow-sm rounded">
+                                <div class="input-group-text bg-empresa-uno text-white border-0"><button type="submit" style="border: none; background-color: transparent;"><i class='bx bx-search-alt bx-sm text-empresa-tres'></i></button></div>
+                                <input type="text" style="position:relative" name="header" id="search" class="form-control border-0" placeholder="Busca un producto modelo o part Number!!" aria-label="Last name" value="{{request('header')}}">
                                 <ul class="list-group" id="suggestions" style="position:absolute;top: 100%; left: 0; width: 100%;z-index:1100"></ul>
                             </form>
                         </div>
@@ -226,7 +251,7 @@
         </div>
         <div style="position:fixed;right:2%;bottom:10%;z-index:3000">
             <div style="width:60px">
-                <a href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola,%20estoy%20interesado%20en%20adquirir%20productos%20de%20su%20pagina%20web" target="_blank" rel="noopener noreferrer">
+                <a href="{{optional($empresa->EmpresaRedSocial->where('idRedSocial',5)->first())->enlace ?? 'https://wa.me/51959062011'}}?text=Hola,%20estoy%20interesado%20en%20adquirir%20productos%20de%20su%20pagina%20web" target="_blank" rel="noopener noreferrer">
                     <img src="{{asset('storage/redsocial/whatsapplogo.webp')}}" alt="" width="60" height="60">
                 </a>
             </div>
@@ -253,7 +278,7 @@
                             <li class="mb-4"><i class='bx bx-user'></i> <a href="{{route('nosotros')}}" class="text-decoration-none text-white">Sobre nosotros</a></li>
                             <li class="mb-4"><i class='bx bx-envelope'></i> <a href="mailto:{{$empresa->correoEmpresa}}" class="text-decoration-none text-white">{{$empresa->correoEmpresa}}</a></li>
                             <li class="mb-4"><i class='bx bx-phone'></i>
-                                <a href="{{$empresa->EmpresaRedSocial->where('idRedSocial',5)->first()->enlace}}?text=Hola,%20estoy%20interesado%20en%20adquirir%20productos%20de%20su%20pagina%20web}}" class="text-decoration-none text-white">+51 959062011</a>
+                                <a href="{{optional($empresa->EmpresaRedSocial->where('idRedSocial',5)->first())->enlace ?? 'https://wa.me/51959062011'}}?text=Hola,%20estoy%20interesado%20en%20adquirir%20productos%20de%20su%20pagina%20web}}" class="text-decoration-none text-white">+51 959062011</a>
                             </li>
                             <li class="mb-4"><i class='bx bx-map'></i> <a href="{{$empresa->ubicacionLink}}" class="text-decoration-none text-white">{{$empresa->ubicacion}}</a></li>
                         </ul>
@@ -262,6 +287,7 @@
                         <h3>Politicas y condiciones</h3>
                         <br>
                         <ul class="list-unstyled ">
+                            <li class="mb-4"><a href="{{route('faq')}}" class="text-decoration-none text-white"><i class="bi bi-question-circle"></i> Preguntas Frecuentes (FAQ)</a></li>
                             <li class="mb-4"><a href="{{route('privacidad')}}" class="text-decoration-none text-white">Politica de privacidad</a></li>
                             <li class="mb-4"><a href="{{route('garantia')}}" class="text-decoration-none text-white">Condiciones de garantia</a></li>
                             <li class="mb-4"><a href="{{route('mediodepago')}}" class="text-decoration-none text-white">Modalidades de pago</a></li>

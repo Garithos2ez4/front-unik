@@ -1,6 +1,34 @@
 @extends('layouts.app')
 
 
+@section('title', 'Unik Store Perú | Tecnología al mejor precio — Lima')
+@section('description', 'Encuentra la mejor tecnología en Unik Store Perú: monitores gaming, laptops, componentes y periféricos. ¡Envíos a todo el Perú y los mejores precios!')
+
+@push('styles')
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ $empresa->nombreComercial }}",
+        "url": "{{ url('/') }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url('/buscar/search') }}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+</script>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{{ $empresa->nombreComercial }}",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('storage/'.$empresa->logo) }}"
+    }
+</script>
+@endpush
+
 @section('content')
 {{-- ---------------------------------------BANNERS SOLO A 1920 * 740p--------------------------------------- --}}
 <br>
@@ -14,13 +42,13 @@
                 @if($contador == 0)
                 <div class="carousel-item active">
                     <a href="{{ route('categoria', ['monitores', 'monitor-portatil']) }}">
-                        <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100">
+                        <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="Promoción {{ $empresa->nombreComercial }}" width="90% " height="10%" class="rounded-3 d-block w-100">
                     </a>
                 </div>
                 @php $contador++; @endphp
                 @else
                 <div class="carousel-item">
-                    <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="" width="90% " height="10%" class="rounded-3 d-block w-100">
+                    <img src="{{asset('storage/'.$banner->imagenPublicidad)}}" alt="Banner {{ $empresa->nombreComercial }}" width="90% " height="10%" class="rounded-3 d-block w-100">
                 </div>
                 @php $contador++; @endphp
                 @endif

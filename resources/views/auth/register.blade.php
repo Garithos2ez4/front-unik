@@ -129,6 +129,9 @@
         const documento = document.getElementById('numeroDocumento').value.trim();
         const feedback = document.getElementById('docFeedback');
         const btnBuscar = document.getElementById('btnBuscarDoc');
+        const nombreInput = document.getElementById('nombre');
+        const apPaternoInput = document.getElementById('apellidoPaterno');
+        const apMaternoInput = document.getElementById('apellidoMaterno');
 
         if (!tipoDoc) {
             feedback.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle"></i> Selecciona el tipo de documento primero.</span>';
@@ -143,6 +146,11 @@
         btnBuscar.disabled = true;
         btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         feedback.innerHTML = '<span class="text-muted">Buscando datos...</span>';
+        
+        // Desbloquear temporalmente mientras busca o si falla
+        nombreInput.readOnly = false;
+        apPaternoInput.readOnly = false;
+        apMaternoInput.readOnly = false;
 
         // Primero buscar en la base de datos interna
         fetch(`{{ route('api.cliente.buscar') }}?numeroDocumento=${documento}`)
@@ -150,17 +158,29 @@
             .then(data => {
                 if (data.success) {
                     const c = data.cliente;
-                    document.getElementById('nombre').value = c.nombre || '';
-                    document.getElementById('apellidoPaterno').value = c.apellidoPaterno || '';
-                    document.getElementById('apellidoMaterno').value = c.apellidoMaterno || '';
+
+                    nombreInput.value = c.nombre || '';
+                    apPaternoInput.value = c.apellidoPaterno || '';
+                    apMaternoInput.value = c.apellidoMaterno || '';
                     document.getElementById('idTipoDocumento').value = c.idTipoDocumento || tipoDoc;
                     document.getElementById('telefono').value = c.telefono || '';
                     if (c.correo) document.getElementById('email').value = c.correo;
-                    feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Datos autocompletados desde nuestro sistema.</span>';
+                    
+                    // Bloquear campos para que no puedan ser editados
+                    if (c.nombre) nombreInput.readOnly = true;
+                    if (c.apellidoPaterno) apPaternoInput.readOnly = true;
+                    if (c.apellidoMaterno) apMaternoInput.readOnly = true;
+                    
+                    if (data.source === 'api') {
+                        feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Datos obtenidos exitosamente.</span>';
+                    } else {
+                        feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Datos autocompletados desde nuestro sistema.</span>';
+                    }
+                    
                     btnBuscar.disabled = false;
                     btnBuscar.innerHTML = '<i class="bi bi-search"></i>';
                 } else {
-                    feedback.innerHTML = '<span class="text-muted"><i class="bi bi-info-circle"></i> No se encontraron datos previos. Completa el formulario manualmente.</span>';
+                    feedback.innerHTML = '<span class="text-muted"><i class="bi bi-info-circle"></i> No se encontraron datos. Completa el formulario manualmente.</span>';
                     btnBuscar.disabled = false;
                     btnBuscar.innerHTML = '<i class="bi bi-search"></i>';
                 }
@@ -177,6 +197,17 @@
         if (e.key === 'Enter') {
             e.preventDefault();
             buscarDocumento();
+        }
+    });
+
+    // Si cambian el documento después de buscar, desbloqueamos los campos
+    document.getElementById('numeroDocumento').addEventListener('input', function() {
+        document.getElementById('nombre').readOnly = false;
+        document.getElementById('apellidoPaterno').readOnly = false;
+        document.getElementById('apellidoMaterno').readOnly = false;
+        const feedback = document.getElementById('docFeedback');
+        if(feedback.innerHTML.includes('text-success')){
+            feedback.innerHTML = '';
         }
     });
 </script>

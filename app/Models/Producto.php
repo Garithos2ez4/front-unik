@@ -42,7 +42,8 @@ class Producto extends Model
         'estadoProductoWeb',
         'slugProducto',
         'usar_tc_fijo',
-        'tc_fijo'
+        'tc_fijo',
+        'updated_at'
     ];
 
 
@@ -60,7 +61,8 @@ class Producto extends Model
         'stockProveedor' => 'int',
         'idProveedor' => 'int',
         'usar_tc_fijo' => 'boolean',
-        'tc_fijo' => 'float'
+        'tc_fijo' => 'float',
+        'updated_at' => 'datetime'
     ];
 
     public static function boot()
@@ -73,6 +75,12 @@ class Producto extends Model
 
         static::updating(function ($producto) {
             $producto->slugProducto = Str::slug($producto->nombreProducto);
+
+            // Si el modelo, partNumber, nombre o descripción cambian, actualizamos la fecha
+            // para que el producto vuelva a aparecer en el carrusel de "Nuevos Ingresos"
+            if ($producto->isDirty(['modelo', 'partNumber', 'nombreProducto', 'descripcionProducto'])) {
+                $producto->updated_at = now();
+            }
         });
     }
 
@@ -171,7 +179,7 @@ class Producto extends Model
             case 'LIQUIDACION':
                 return 'text-agotado'; // Rojo
             case 'AGOTADO':
-                return 'text-warning text-decoration-line-through';
+                return 'agotado-badge fw-bold text-decoration-line-through';
             case 'DESCONTINUADO':
                 return 'text-dark text-decoration-line-through';
             default:
