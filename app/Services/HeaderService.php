@@ -66,9 +66,11 @@ class HeaderService implements HeaderServiceInterface
         });
     }
     public function obtenerLinkRedes(){
-        return EmpresaRedSocial::with('RedSocial')
-                    ->where('idEmpresa', self::$id)
-                    ->get();
+        return \Illuminate\Support\Facades\Cache::remember('header_link_redes_' . self::$id, 60 * 30, function () {
+            return EmpresaRedSocial::with('RedSocial')
+                        ->where('idEmpresa', self::$id)
+                        ->get();
+        });
     }
 
    public function getApiDolar() {
@@ -157,18 +159,22 @@ class HeaderService implements HeaderServiceInterface
     }
 
     function obtenerCambioDolar(){
-        $calculadora = $this->calculadoraRepository->get();
-        $this->updateTipoCambio($calculadora->tasaCambio);
-        return $calculadora->tasaCambio;
+        return \Illuminate\Support\Facades\Cache::remember('header_cambio_dolar', 60 * 30, function () {
+            $calculadora = $this->calculadoraRepository->get();
+            $this->updateTipoCambio($calculadora->tasaCambio);
+            return $this->calculadoraRepository->get()->tasaCambio;
+        });
     }
 
     function obtenerCambioDolarFijo(){
-        $calculadora = $this->calculadoraRepository->findById(2);
+        return \Illuminate\Support\Facades\Cache::remember('header_cambio_dolar_fijo', 60 * 30, function () {
+            $calculadora = $this->calculadoraRepository->findById(2);
 
-        if(!$calculadora){
-            return null;
-        }
+            if(!$calculadora){
+                return null;
+            }
 
-        return $calculadora->tasaCambio;
+            return $calculadora->tasaCambio;
+        });
     }
 }

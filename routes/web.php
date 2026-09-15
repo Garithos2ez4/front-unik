@@ -76,6 +76,8 @@ Route::post('/carrito/add/{id}', [CartController::class, 'add'])->name('cart.add
 Route::patch('/carrito/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/carrito/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::delete('/carrito/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/carrito/calculate-shipping', [CartController::class, 'calculateShipping'])->name('cart.calculateShipping');
+Route::get('/carrito/geocode', [CartController::class, 'geocode'])->name('cart.geocode');
 
 // ========================================
 // Rutas de Checkout / Pasarelas de Pago

@@ -32,15 +32,20 @@ class ProductoService implements ProductoServiceInterface
     }
 
     public function getProductosByCategoria($idCategoria,$cantidad){
-        $categoria = $this->categoriaRepository->getOne('idCategoria',$idCategoria);
-        $productos = $categoria->GrupoProducto->pluck('Producto')->flatten();
+        return \Illuminate\Support\Facades\Cache::remember('productos_categoria_'.$idCategoria, 60 * 10, function() use ($idCategoria, $cantidad) {
+            $categoria = $this->categoriaRepository->getOne('idCategoria',$idCategoria);
+            
+            // Eager Load para evitar el problema de N+1 consultas
+            $categoria->load('GrupoProducto.Producto'); 
+            
+            $productos = $categoria->GrupoProducto->pluck('Producto')->flatten();
 
-        $productosFiltrados = $productos->filter(function ($producto) {
-            return $producto->estadoProductoWeb !== 'DESCONTINUADO';
+            $productosFiltrados = $productos->filter(function ($producto) {
+                return $producto->estadoProductoWeb !== 'DESCONTINUADO';
+            });
+
+            return $productosFiltrados->shuffle()->take($cantidad);
         });
-
-        $productosFinales = $productosFiltrados->shuffle()->take($cantidad);
-        return $productosFinales;
     }
     public function getAjaxListaProductos(Request $request, Empresa $empresa, LengthAwarePaginator $productos)
     {

@@ -34,6 +34,12 @@ class CheckoutController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
+        $shippingInfo = session()->get('shipping_info', [
+            'tipo_entrega' => 'tienda',
+            'costo_envio' => 0
+        ]);
+        $total += $shippingInfo['costo_envio'];
+
         $categorias = $this->headerService->obtenerCategorias();
         $empresa = $this->headerService->obtenerEmpresa();
         $marcas = $this->headerService->obtenerMarcas();
@@ -71,13 +77,30 @@ class CheckoutController extends Controller
             $total += round($price, 2) * $item['quantity'];
         }
 
+        $shippingInfo = session()->get('shipping_info', [
+            'tipo_entrega' => 'tienda',
+            'costo_envio' => 0
+        ]);
+        $total += $shippingInfo['costo_envio'];
+
         // Crear PedidoWeb inicial PENDIENTE
         $pedido = PedidoWeb::create([
             'idCliente' => $cliente->idCliente,
             'pasarela' => 'whatsapp_manual',
             'total' => $total,
-            'estado' => 'PENDIENTE'
+            'estado' => 'PENDIENTE',
+            'tipo_entrega' => $shippingInfo['tipo_entrega'],
+            'costo_envio' => $shippingInfo['costo_envio']
         ]);
+
+        if ($shippingInfo['tipo_entrega'] === 'domicilio') {
+            \App\Models\DireccionPedidoWeb::create([
+                'pedido_web_id' => $pedido->idPedidoWeb,
+                'direccion' => $shippingInfo['direccion'] ?? 'No especificada',
+                'latitud' => $shippingInfo['latitud'] ?? 0,
+                'longitud' => $shippingInfo['longitud'] ?? 0,
+            ]);
+        }
 
         foreach ($cart as $id => $item) {
             DetallePedidoWeb::create([
@@ -88,8 +111,9 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Limpiar el carrito
+        // Limpiar el carrito y envío
         session()->forget('cart');
+        session()->forget('shipping_info');
 
         // Cargar detalles con producto para obtener modelos
         $pedido->load('detalles.producto');
@@ -99,7 +123,8 @@ class CheckoutController extends Controller
             return $detalle->producto->modelo ?? $detalle->producto->nombreProducto ?? 'Producto';
         })->implode(', ');
 
-        $mensaje = urlencode("Hola, acabo de realizar el pedido #{$pedido->idPedidoWeb} del modelo {$modelos} por S/ " . number_format($pedido->total, 2) . ". Me gustaría solicitar los numeros de cuenta o el link o QR de pago.");
+        $envioMsj = $pedido->tipo_entrega === 'domicilio' ? ' (incluye S/ ' . number_format($pedido->costo_envio, 2) . ' de envío a domicilio)' : ' (Recojo en tienda)';
+        $mensaje = urlencode("Hola, acabo de realizar el pedido #{$pedido->idPedidoWeb} del modelo {$modelos} por S/ " . number_format($pedido->total, 2) . "{$envioMsj}. Me gustaría solicitar los numeros de cuenta o el link o QR de pago.");
         $linkWs = "https://wa.me/51{$whatsapp}?text={$mensaje}";
 
         // Redirigir directamente a WhatsApp
